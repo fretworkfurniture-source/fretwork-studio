@@ -315,7 +315,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
         <div class="card">
           <div class="card-title">訂購品項</div>
           <div class="items-header">
-            <span>品項名稱</span><span>尺寸</span><span>木種</span><span>塗裝</span><span>單價</span><span>數量</span><span></span>
+            <span>54c19805</span><span>898f683cFf0f5c3a5bf8</span><span>67287a2eFf0f984f8272</span><span>585788ddFf0f50998a3b</span><span>55ae50f9</span><span>657891cf</span><span></span>
           </div>
           <div id="items-container"></div>
           <button class="btn btn-sm btn-ghost" onclick="addItem()">＋ 新增品項</button>
@@ -738,15 +738,162 @@ function initNewOrder() {
   renderContract();
 }
 
+// ─── 產品資料庫 ───────────────────────────────────────────────
+const PRODUCTS = {
+  'DT2': { label:'DT2 餐桌（長桌）', brand:'F', sizes:['120×80','140×80','160×80','180×80','200×80','220×80','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'DT2R-平腳': { label:'DT2R 圓桌（平腳）', brand:'F', sizes:['Ø80','Ø90','Ø100','Ø110','Ø120','Ø130','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'DT2R-弧腳': { label:'DT2R 圓桌（弧腳）', brand:'F', sizes:['Ø80','Ø90','Ø100','Ø110','Ø120','Ø130','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'DT2B': { label:'DT2B 長凳', brand:'F', sizes:['100×35','120×35','140×35','160×35','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'DT2D': { label:'DT2D 書桌', brand:'F', sizes:['120×60','140×70','160×80','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'LD-置中腳': { label:'LD 升降桌（置中腳）', brand:'F', sizes:['120×60','140×70','160×80','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'LD-後置腳': { label:'LD 升降桌（後置腳）', brand:'F', sizes:['120×60','140×70','160×80','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'TON-311014': { label:'TON 311014（木面/Beech）', brand:'T', sizes:['41×51.5×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:11200 },
+  'TON-315014': { label:'TON 315014（藤面/Beech）', brand:'T', sizes:['41×51.5×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:13200 },
+  'TON-311018': { label:'TON 311018（木面/Beech）', brand:'T', sizes:['41×51.5×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:11400 },
+  'TON-315018': { label:'TON 315018（藤面/Beech）', brand:'T', sizes:['41×51.5×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:13400 },
+  'TON-315020': { label:'TON 315020（藤面/Beech）', brand:'T', sizes:['41×54×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:16980 },
+  'TON-321030': { label:'TON 321030（木面扶手/Beech）', brand:'T', sizes:['54.5×57×78/坐46/扶70'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:14800 },
+  'TON-325030': { label:'TON 325030（藤面扶手/Beech）', brand:'T', sizes:['54.5×57×78/坐46/扶70'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:19200 },
+  'TON-325033': { label:'TON 325033（藤面扶手/Beech）', brand:'T', sizes:['54.5×57×78/坐46/扶70'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:22100 },
+  'TON-311035': { label:'TON 311035（木面/Beech）', brand:'T', sizes:['44×47.5×84.5/坐45'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:6200 },
+  'TON-371060': { label:'TON 371060（木面/Beech）', brand:'T', sizes:['44.5×44.5/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:6900 },
+  'TON-375060': { label:'TON 375060（藤面/Beech）', brand:'T', sizes:['44.5×44.5/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:8980 },
+  'TON-315811': { label:'TON 315811（藤面/Beech）', brand:'T', sizes:['45×53.5×80/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:20550 },
+  'TON-325811': { label:'TON 325811（藤面+扶手/Beech）', brand:'T', sizes:['50×53.5×80/坐46/扶68'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:23600 },
+  'TON-LeafBarStool': { label:'TON Leaf Bar Stool（木面/Oak）', brand:'T', sizes:['41×37×高61','41×37×高76'], woods:['Oak'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:0 },
+  'TON-Merano-Beech': { label:'TON Merano（木面/Beech）', brand:'T', sizes:['標準'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:25000 },
+  'TON-Merano-Oak': { label:'TON Merano（木面/Oak）', brand:'T', sizes:['標準'], woods:['Oak'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:33400 },
+  'ESA-FORE-原木電鍍': { label:'Esaila FORE Chair（原木/電鍍）', brand:'E', sizes:['標準'], woods:['—'], finishes:['原木/電鍍'], price:14200 },
+  'ESA-FORE-原木黑': { label:'Esaila FORE Chair（原木/黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['原木/黑'], price:14200 },
+  'ESA-FORE-灰電鍍': { label:'Esaila FORE Chair（灰/電鍍）', brand:'E', sizes:['標準'], woods:['—'], finishes:['灰/電鍍'], price:14200 },
+  'ESA-FORE-灰黑': { label:'Esaila FORE Chair（灰/黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['灰/黑'], price:14200 },
+  'ESA-FORE-黑電鍍': { label:'Esaila FORE Chair（黑/電鍍）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑/電鍍'], price:14200 },
+  'ESA-FORE-黑黑': { label:'Esaila FORE Chair（黑/黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑/黑'], price:14200 },
+  'ESA-OGLE-白': { label:'Esaila OGLE Chair（白）', brand:'E', sizes:['標準'], woods:['—'], finishes:['白'], price:12600 },
+  'ESA-OGLE-黑': { label:'Esaila OGLE Chair（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:12600 },
+  'ESA-PUSHPIN-Adult-軟木': { label:'Esaila PUSHPIN Adult（軟木）', brand:'E', sizes:['標準'], woods:['—'], finishes:['軟木'], price:10500 },
+  'ESA-PUSHPIN-Adult-黑': { label:'Esaila PUSHPIN Adult（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:10700 },
+  'ESA-PUSHPIN-Mini-軟木': { label:'Esaila PUSHPIN Mini（軟木）', brand:'E', sizes:['標準'], woods:['—'], finishes:['軟木'], price:7700 },
+  'ESA-PUSHPIN-Mini-黑': { label:'Esaila PUSHPIN Mini（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:7900 },
+  'ESA-BRAVO-原木': { label:'Esaila BRAVO Stool（原木）', brand:'E', sizes:['標準','軟木椅座'], woods:['—'], finishes:['原木'], price:9200 },
+  'ESA-BRAVO-黑': { label:'Esaila BRAVO Stool（黑）', brand:'E', sizes:['標準','軟木椅座'], woods:['—'], finishes:['黑'], price:9200 },
+  'ESA-BRAVO-灰': { label:'Esaila BRAVO Stool（灰）', brand:'E', sizes:['標準','軟木椅座'], woods:['—'], finishes:['灰'], price:9200 },
+  'ESA-TARS-原木': { label:'Esaila TARS Stool（原木）', brand:'E', sizes:['標準'], woods:['—'], finishes:['原木'], price:8600 },
+  'ESA-TARS-黑': { label:'Esaila TARS Stool（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:8600 },
+  'ESA-TARS-灰': { label:'Esaila TARS Stool（灰）', brand:'E', sizes:['標準'], woods:['—'], finishes:['灰'], price:8600 },
+  'ESA-TARS-紅': { label:'Esaila TARS Stool（紅）', brand:'E', sizes:['標準'], woods:['—'], finishes:['紅'], price:8600 },
+  'ESA-TOVA-原木': { label:'Esaila TOVA Stool（原木）', brand:'E', sizes:['標準'], woods:['—'], finishes:['原木'], price:9900 },
+  'ESA-TOVA-黑': { label:'Esaila TOVA Stool（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:9900 },
+  'ESA-SISTER-原木': { label:'Esaila SISTER Coffee Table（原木）', brand:'E', sizes:['標準'], woods:['—'], finishes:['原木'], price:14200 },
+  'ESA-SISTER-煙燻': { label:'Esaila SISTER Coffee Table（煙燻）', brand:'E', sizes:['標準'], woods:['—'], finishes:['煙燻'], price:14200 },
+  'ESA-SISTER-黑': { label:'Esaila SISTER Coffee Table（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:14200 },
+  'ESA-PEDESTAL-Table-白': { label:'Esaila PEDESTAL Table（白）', brand:'E', sizes:['標準'], woods:['—'], finishes:['白'], price:11300 },
+  'ESA-PEDESTAL-Table-黑': { label:'Esaila PEDESTAL Table（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:11300 },
+  'ESA-PEDESTAL-Box-米白': { label:'Esaila PEDESTAL Box（米白）', brand:'E', sizes:['標準'], woods:['—'], finishes:['米白'], price:8500 },
+  'ESA-PEDESTAL-Box-黑': { label:'Esaila PEDESTAL Box（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:8500 },
+  'ESA-KIPA-淺灰': { label:'Esaila KIPA Table（淺灰）', brand:'E', sizes:['標準'], woods:['—'], finishes:['淺灰'], price:9600 },
+  'ESA-KIPA-黑': { label:'Esaila KIPA Table（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:9600 },
+  'ESA-EDGE-淺灰': { label:'Esaila EDGE Table（淺灰）', brand:'E', sizes:['標準'], woods:['—'], finishes:['淺灰'], price:11200 },
+  'ESA-EDGE-黑': { label:'Esaila EDGE Table（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:11200 },
+  'ESA-EDGE-橄欖': { label:'Esaila EDGE Table（橄欖）', brand:'E', sizes:['標準'], woods:['—'], finishes:['橄欖'], price:11200 },
+  'ESA-EDGE-鵝黃': { label:'Esaila EDGE Table（鵝黃）', brand:'E', sizes:['標準'], woods:['—'], finishes:['鵝黃'], price:11200 },
+  'ESA-ROVE-淺灰': { label:'Esaila ROVE Table（淺灰）', brand:'E', sizes:['標準'], woods:['—'], finishes:['淺灰'], price:8300 },
+  'ESA-ROVE-黑': { label:'Esaila ROVE Table（黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['黑'], price:8300 },
+  'ESA-ROVE-鵝黃': { label:'Esaila ROVE Table（鵝黃）', brand:'E', sizes:['標準'], woods:['—'], finishes:['鵝黃'], price:8300 },
+  'TM-T3266': { label:'天童木工 Swing chair 升降辦公椅（T-3266）', brand:'TM', sizes:['標準'], woods:['—'], finishes:['請洽確認'], price:48000 },
+  'TM-T0635': { label:'天童木工 松村勝男 餐椅（T-0635WB-NT）', brand:'TM', sizes:['標準'], woods:['—'], finishes:['請洽確認'], price:15800 },
+  'TM-T3153': { label:'天童木工 柳宗理 梣木坐墊餐椅（T-3153）', brand:'TM', sizes:['標準'], woods:['—'], finishes:['請洽確認'], price:27500 },
+  'TM-M0559': { label:'天童木工 Mathsson 餐椅（M-0559）', brand:'TM', sizes:['標準'], woods:['—'], finishes:['請洽確認'], price:26500 },
+  'TM-T3036': { label:'天童木工 柳宗理 貝殼椅（T-3036）', brand:'TM', sizes:['標準'], woods:['—'], finishes:['請洽確認'], price:38800 },
+  'TM-S5026': { label:'天童木工 Murai 椅凳（S-5026TK-NT）', brand:'TM', sizes:['標準'], woods:['—'], finishes:['請洽確認'], price:35000 },
+  'TM-M0562': { label:'天童木工 Mathsson 高背主人椅（M-0562WB-NT）', brand:'TM', sizes:['標準'], woods:['—'], finishes:['請洽確認'], price:78000 },
+  'TM-OTHER': { label:'天童木工 其他款式（手動輸入）', brand:'TM', sizes:['自訂'], woods:['—'], finishes:['自訂'], price:0 },
+  'CUSTOM': { label:'自訂品項（手動輸入）', brand:'F', sizes:['自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木','—（非木製）'], finishes:['日本大谷漆裝','自訂'], price:0 },
+};
+
+const PRODUCT_GROUPS = [
+  { label:'── Fretwork 自家 ──', keys:['DT2','DT2R-平腳','DT2R-弧腳','DT2B','DT2D','LD-置中腳','LD-後置腳'] },
+  { label:'── TON ──', keys:['TON-311014','TON-315014','TON-311018','TON-315018','TON-315020','TON-321030','TON-325030','TON-325033','TON-311035','TON-371060','TON-375060','TON-315811','TON-325811','TON-LeafBarStool','TON-Merano-Beech','TON-Merano-Oak'] },
+  { label:'── Esaila ──', keys:['ESA-FORE-原木電鍍','ESA-FORE-原木黑','ESA-FORE-灰電鍍','ESA-FORE-灰黑','ESA-FORE-黑電鍍','ESA-FORE-黑黑','ESA-OGLE-白','ESA-OGLE-黑','ESA-PUSHPIN-Adult-軟木','ESA-PUSHPIN-Adult-黑','ESA-PUSHPIN-Mini-軟木','ESA-PUSHPIN-Mini-黑','ESA-BRAVO-原木','ESA-BRAVO-黑','ESA-BRAVO-灰','ESA-TARS-原木','ESA-TARS-黑','ESA-TARS-灰','ESA-TARS-紅','ESA-TOVA-原木','ESA-TOVA-黑','ESA-SISTER-原木','ESA-SISTER-煙燻','ESA-SISTER-黑','ESA-PEDESTAL-Table-白','ESA-PEDESTAL-Table-黑','ESA-PEDESTAL-Box-米白','ESA-PEDESTAL-Box-黑','ESA-KIPA-淺灰','ESA-KIPA-黑','ESA-EDGE-淺灰','ESA-EDGE-黑','ESA-EDGE-橄欖','ESA-EDGE-鵝黃','ESA-ROVE-淺灰','ESA-ROVE-黑','ESA-ROVE-鵝黃'] },
+  { label:'── 天童木工 ──', keys:['TM-T3266','TM-T0635','TM-T3153','TM-M0559','TM-T3036','TM-S5026','TM-M0562','TM-OTHER'] },
+  { label:'── 自訂 ──', keys:['CUSTOM'] },
+];
+
+function buildProductOptions() {
+  return PRODUCT_GROUPS.map(g =>
+    `<optgroup label="${g.label}">${g.keys.map(k=>`<option value="${k}">${PRODUCTS[k].label}</option>`).join('')}</optgroup>`
+  ).join('');
+}
+
+function onProductSelect(i) {
+  const key = document.getElementById('i'+i+'-key')?.value;
+  const p = PRODUCTS[key];
+  if (!p) return;
+  const sizeEl = document.getElementById('i'+i+'-size');
+  const sizeInput = document.getElementById('i'+i+'-size-input');
+  if (sizeEl) {
+    sizeEl.innerHTML = p.sizes.map(s=>`<option value="${s}">${s}</option>`).join('');
+    if (sizeInput) sizeInput.style.display = p.sizes.includes('自訂') ? 'block' : 'none';
+  }
+  const woodEl = document.getElementById('i'+i+'-wood');
+  if (woodEl) woodEl.innerHTML = p.woods.map(w=>`<option>${w}</option>`).join('');
+  const finishEl = document.getElementById('i'+i+'-finish');
+  const finishInput = document.getElementById('i'+i+'-finish-input');
+  if (finishEl) {
+    finishEl.innerHTML = p.finishes.map(f=>`<option value="${f}">${f}</option>`).join('');
+    if (finishInput) finishInput.style.display = 'none';
+    onFinishSelect(i);
+  }
+  const priceEl = document.getElementById('i'+i+'-price');
+  if (priceEl && p.price) priceEl.value = p.price;
+  const nameEl = document.getElementById('i'+i+'-name');
+  if (nameEl) nameEl.value = p.label;
+  onItemChange();
+}
+
+function onSizeSelect(i) {
+  const sizeEl = document.getElementById('i'+i+'-size');
+  const sizeInput = document.getElementById('i'+i+'-size-input');
+  if (!sizeEl || !sizeInput) return;
+  sizeInput.style.display = sizeEl.value === '自訂' ? 'block' : 'none';
+  onItemChange();
+}
+
+function onFinishSelect(i) {
+  const finishEl = document.getElementById('i'+i+'-finish');
+  const finishInput = document.getElementById('i'+i+'-finish-input');
+  if (!finishEl || !finishInput) return;
+  finishInput.style.display = (finishEl.value === '自訂' || finishEl.value === '請洽確認') ? 'block' : 'none';
+  onItemChange();
+}
+
 function addItem() {
   const i = itemCount++;
   const row = document.createElement('div');
   row.className = 'item-row'; row.id = 'item-'+i;
   row.innerHTML = `
-    <div class="field"><label>品項名稱</label><input id="i${i}-name" placeholder="DT2圓桌 / 升降桌 / TON No.35" oninput="onItemChange()"></div>
-    <div class="field"><label>尺寸</label><input id="i${i}-size" placeholder="Ø110 / 140×70" oninput="onItemChange()"></div>
-    <div class="field"><label>木種</label><select id="i${i}-wood" onchange="onItemChange()">${WOOD.map(w=>`<option>${w}</option>`).join('')}<option>—（非木製）</option></select></div>
-    <div class="field"><label>塗裝</label><input id="i${i}-finish" placeholder="大谷漆裝 / 黑檀木色" oninput="onItemChange()"></div>
+    <div class="field">
+      <label>品項</label>
+      <select id="i${i}-key" onchange="onProductSelect(${i})">
+        <option value="">── 請選擇品項 ──</option>
+        ${buildProductOptions()}
+      </select>
+      <input type="hidden" id="i${i}-name" value="">
+    </div>
+    <div class="field">
+      <label>規格／尺寸</label>
+      <select id="i${i}-size" onchange="onSizeSelect(${i})"><option>—</option></select>
+      <input id="i${i}-size-input" placeholder="自訂尺寸..." style="display:none;margin-top:4px;font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper);color:var(--ink)" oninput="onItemChange()">
+    </div>
+    <div class="field">
+      <label>木種／顏色</label>
+      <select id="i${i}-wood" onchange="onItemChange()"><option>—</option></select>
+    </div>
+    <div class="field">
+      <label>塗裝／備註</label>
+      <select id="i${i}-finish" onchange="onFinishSelect(${i})"><option>—</option></select>
+      <input id="i${i}-finish-input" placeholder="備註..." style="display:none;margin-top:4px;font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper);color:var(--ink)" oninput="onItemChange()">
+    </div>
     <div class="field"><label>單價</label><input id="i${i}-price" type="number" placeholder="0" oninput="calcSummary()"></div>
     <div class="field"><label>數量</label><input id="i${i}-qty" type="number" value="1" min="1" oninput="calcSummary()"></div>
     <button class="rm-btn" onclick="removeItem(${i})">×</button>`;
@@ -764,11 +911,17 @@ function getItems() {
   for(let i=0;i<itemCount;i++){
     const el=document.getElementById('item-'+i);
     if(!el) continue;
+    const sizeEl = document.getElementById('i'+i+'-size');
+    const sizeInput = document.getElementById('i'+i+'-size-input');
+    const finishEl = document.getElementById('i'+i+'-finish');
+    const finishInput = document.getElementById('i'+i+'-finish-input');
+    const sizeVal = sizeEl?.value==='自訂' ? (sizeInput?.value||'') : (sizeEl?.value||'');
+    const finishVal = (finishEl?.value==='自訂'||finishEl?.value==='請洽確認') ? (finishInput?.value||finishEl?.value||'') : (finishEl?.value||'');
     items.push({
       name: document.getElementById('i'+i+'-name')?.value||'',
-      size: document.getElementById('i'+i+'-size')?.value||'',
+      size: sizeVal,
       wood: document.getElementById('i'+i+'-wood')?.value||'',
-      finish: document.getElementById('i'+i+'-finish')?.value||'',
+      finish: finishVal,
       price: parseFloat(document.getElementById('i'+i+'-price')?.value)||0,
       qty: parseInt(document.getElementById('i'+i+'-qty')?.value)||1,
     });
@@ -776,12 +929,43 @@ function getItems() {
   return items.filter(it=>it.name||it.price);
 }
 
+// 品牌設定：未來新增品牌只需在此加一行
+const BRAND_CONFIG = [
+  { key: 'T', label: 'TON',    detect: (it) => it.name.toUpperCase().includes('TON') },
+  { key: 'E', label: 'Esaila', detect: (it) => it.name.toUpperCase().includes('ESAILA') || it.name.includes('依艾') },
+];
+
+function isDealer(it) {
+  return BRAND_CONFIG.some(b => b.detect(it));
+}
+
 function detectTypes(items) {
-  return {
-    hasLift: items.some(it=>it.name.includes('升降')),
-    hasTon: items.some(it=>it.name.toUpperCase().includes('TON')),
-    hasCustom: items.some(it=>!it.name.toUpperCase().includes('TON')),
-  };
+  const hasTon = items.some(it => BRAND_CONFIG[0].detect(it));
+  const hasEsaila = items.some(it => BRAND_CONFIG[1].detect(it));
+  const hasLift = items.some(it => it.name.includes('升降'));
+  const hasCustom = items.some(it => !isDealer(it));
+  return { hasLift, hasTon, hasEsaila, hasCustom };
+}
+
+function generateOrderId(signDate, items) {
+  if (!signDate) return '請填寫簽約日期';
+  const yearMonth = signDate.slice(0,7).replace('-',''); // YYYYMM
+  const signMMDD = signDate.slice(5).replace('-','');    // MMDD
+  const monthOrders = cache.orders.filter(o => (o.sign_date||'').slice(0,7) === signDate.slice(0,7));
+  const monthSeq = String(monthOrders.length + 1).padStart(2,'0');
+  const { hasCustom } = detectTypes(items);
+  const fTag = hasCustom ? 'F' : '';
+  let brandTags = '';
+  BRAND_CONFIG.forEach(brand => {
+    const hasBrand = items.some(it => brand.detect(it));
+    if (hasBrand) {
+      const brandCount = monthOrders.filter(o =>
+        (o.items||[]).some(it => brand.detect(it))
+      ).length + 1;
+      brandTags += brand.key + String(brandCount).padStart(2,'0');
+    }
+  });
+  return `${yearMonth}${monthSeq}${fTag}${brandTags}-${signMMDD}`;
 }
 
 function onItemChange(){calcSummary();renderContract();}
@@ -820,7 +1004,7 @@ function renderContract() {
   const total = sub+ship;
   const dep = Math.round(total*rate);
   const bal = total-dep;
-  const oid = signDate?signDate.replace(/-/g,'').slice(2)+'-XXXX':'XXXXXXXX-XXXX';
+  const oid = generateOrderId(signDate, items);
 
   const types=[];
   if(hasCustom&&!hasLift&&!hasTon){types.push('一般客製家具合約（十條）');}
@@ -915,15 +1099,12 @@ async function saveOrder() {
     const bal = total-dep;
     const signDate = document.getElementById('f-sign-date')?.value||new Date().toISOString().slice(0,10);
 
-    // Get next IDs from settings
-    const [orderSetting] = await q('settings','key=eq.next_order_id&select=value');
-    const [custSetting] = await q('settings','key=eq.next_cust_id&select=value');
-    const nextOrderNum = parseInt(orderSetting?.value||1);
-    const nextCustNum = parseInt(custSetting?.value||1);
+    // 產生訂單編號
+    const orderId = generateOrderId(signDate, items);
 
-    const dateStr = signDate.replace(/-/g,'').slice(2);
-    const orderId = dateStr+'-'+String(nextOrderNum).padStart(4,'0');
-    const custId = 'C'+String(nextCustNum).padStart(4,'0');
+    // 產生客戶ID
+    const nextCustNum = cache.customers.length + 1;
+    const custId = 'C' + String(nextCustNum).padStart(4,'0');
 
     // Upsert customer
     let cust = cache.customers.find(c=>c.name===name);
@@ -959,7 +1140,6 @@ async function saveOrder() {
       steps, current_step: '', steps_done: []
     });
 
-    await update('settings','key','next_order_id',{value:String(nextOrderNum+1)});
     await refreshData();
     showToast(`訂單 ${orderId} 建立成功！`);
     gotoPage('orders',null);
