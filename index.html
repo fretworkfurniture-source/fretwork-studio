@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FRETWORK FURNITURE — 管理系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a18;--ink2:#4a4a46;--ink3:#8a8a84;
+  --paper:#faf9f6;--paper2:#f2f1ec;--paper3:#e8e6de;
+  --line:#d8d6cc;--line2:#c8c6ba;
+  --gold:#8B6914;--gold-bg:#fdf6e3;
+  --green:#2d6a4f;--green-bg:#e8f5ee;
+  --red:#8b2020;--red-bg:#fdf0f0;
+  --blue:#1a4a7a;--blue-bg:#eef4fc;
+  --amber:#7a4e00;--amber-bg:#fdf3e0;
+  --radius:6px;--radius-lg:10px;
+}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--ink);font-size:14px;min-height:100vh}
+
+.app-shell{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:200px;background:var(--ink);color:var(--paper);display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:0.5px solid rgba(255,255,255,0.1)}
+.sidebar-logo .brand{font-family:'Noto Serif TC',serif;font-size:13px;font-weight:500;letter-spacing:0.12em;color:#fff}
+.sidebar-logo .sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;letter-spacing:0.08em}
+.sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
+.nav-section{font-size:9px;font-weight:500;color:rgba(255,255,255,0.3);letter-spacing:0.1em;padding:12px 20px 4px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:13px;transition:all .15s}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:#fff}
+.nav-item.active{background:rgba(255,255,255,0.12);color:#fff}
+.nav-icon{width:16px;text-align:center;font-size:12px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:10px;padding:1px 6px;border-radius:99px}
+.nav-item.active .nav-badge{background:rgba(255,255,255,0.25)}
+.sync-indicator{padding:12px 20px;font-size:10px;color:rgba(255,255,255,0.3);border-top:0.5px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:6px}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;flex-shrink:0}
+.sync-dot.syncing{background:#ff9800;animation:pulse 1s infinite}
+.sync-dot.error{background:#f44336}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.main{flex:1;overflow-y:auto;background:var(--paper3)}
+.topbar{background:var(--paper);border-bottom:0.5px solid var(--line);padding:0 28px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar-title{font-family:'Noto Serif TC',serif;font-size:15px;font-weight:500}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.content{padding:24px 28px}
+
+.card{background:var(--paper);border:0.5px solid var(--line);border-radius:var(--radius-lg);padding:20px;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:500;color:var(--ink2);letter-spacing:0.04em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title::before{content:'';display:inline-block;width:3px;height:12px;background:var(--ink);border-radius:2px}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{background:var(--paper);border:0.5px solid var(--line);border-radius:var(--radius-lg);padding:16px 18px}
+.stat-label{font-size:10px;color:var(--ink3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px}
+.stat-value{font-size:26px;font-weight:300;color:var(--ink);font-family:'Noto Serif TC',serif}
+.stat-sub{font-size:11px;color:var(--ink3);margin-top:4px}
+.stat-sub.up{color:var(--green)}
+.stat-sub.warn{color:var(--amber)}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:12px;font-family:inherit;background:none;border:0.5px solid var(--line2);border-radius:var(--radius);cursor:pointer;color:var(--ink2);transition:all .15s}
+.btn:hover{background:var(--paper2);color:var(--ink)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn-primary:hover{background:#333;color:#fff}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-ghost{border-color:transparent;color:var(--ink3)}
+.btn-ghost:hover{background:var(--paper2);color:var(--ink)}
+
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap}
+.badge-inquiry{background:var(--amber-bg);color:var(--amber)}
+.badge-confirmed{background:var(--blue-bg);color:var(--blue)}
+.badge-producing{background:var(--gold-bg);color:var(--gold)}
+.badge-ready{background:#f0eef8;color:#4a3580}
+.badge-shipped{background:var(--green-bg);color:var(--green)}
+.badge-done{background:var(--paper2);color:var(--ink3)}
+
+.src{display:inline-block;font-size:9px;font-weight:500;padding:2px 6px;border-radius:4px;margin-right:4px;letter-spacing:0.04em}
+.src-ig{background:#fce4f0;color:#8b1a5a}
+.src-fb{background:var(--blue-bg);color:var(--blue)}
+.src-line{background:var(--green-bg);color:var(--green)}
+.src-thread{background:#f0eef8;color:#4a3580}
+.src-phone{background:var(--paper2);color:var(--ink2)}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.form-full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:500;color:var(--ink2);letter-spacing:0.03em}
+.field input,.field select,.field textarea{font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper);color:var(--ink);outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink2)}
+.field textarea{resize:vertical;min-height:60px;line-height:1.6}
+
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{font-size:10px;font-weight:500;color:var(--ink3);letter-spacing:0.06em;text-transform:uppercase;padding:8px 12px;border-bottom:0.5px solid var(--line);text-align:left}
+.data-table td{padding:11px 12px;border-bottom:0.5px solid var(--line);color:var(--ink2);vertical-align:middle}
+.data-table tr:hover td{background:var(--paper2)}
+.data-table td.primary{color:var(--ink);font-weight:500}
+.data-table tr:last-child td{border-bottom:none}
+
+.pipeline-wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:4px}
+.pipeline-header{font-size:10px;font-weight:500;color:var(--ink3);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.pipeline-count{background:var(--paper2);color:var(--ink3);font-size:10px;padding:1px 6px;border-radius:99px}
+.pipeline-card{background:var(--paper);border:0.5px solid var(--line);border-radius:var(--radius);padding:10px;margin-bottom:6px;cursor:pointer;transition:all .15s}
+.pipeline-card:hover{border-color:var(--line2)}
+.pipeline-card.urgent{border-left:3px solid #c8860a}
+.pc-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.pc-detail{font-size:11px;color:var(--ink3);line-height:1.4}
+.pc-step{font-size:10px;color:var(--gold);margin-top:4px;font-weight:500}
+
+.items-header{display:grid;grid-template-columns:2.5fr 1.2fr 1.5fr 1.5fr 1fr 1fr 28px;gap:8px;padding:0 0 6px;border-bottom:0.5px solid var(--line);margin-bottom:8px}
+.items-header span{font-size:10px;font-weight:500;color:var(--ink3);letter-spacing:0.04em}
+.item-row{display:grid;grid-template-columns:2.5fr 1.2fr 1.5fr 1.5fr 1fr 1fr 28px;gap:8px;margin-bottom:8px;align-items:end}
+.item-row .field label{font-size:10px}
+.rm-btn{width:28px;height:28px;border-radius:50%;background:none;border:0.5px solid var(--line2);cursor:pointer;color:var(--ink3);font-size:15px;display:flex;align-items:center;justify-content:center;align-self:flex-end;transition:all .15s;flex-shrink:0}
+.rm-btn:hover{background:var(--red-bg);color:var(--red);border-color:#f09595}
+
+.summary{background:var(--paper2);border-radius:var(--radius);padding:14px 16px;margin-top:14px}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--ink2)}
+.sum-row.total{font-weight:500;color:var(--ink);font-size:15px;border-top:0.5px solid var(--line2);margin-top:6px;padding-top:8px}
+.sum-row.deposit-row{color:var(--green)}
+.sum-row.balance-row{color:var(--amber)}
+
+.contract-box{border:0.5px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;margin-top:14px}
+.contract-toolbar{background:var(--paper2);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid var(--line)}
+.contract-toolbar span{font-size:12px;color:var(--ink2);font-weight:500}
+.contract-body{padding:28px 32px;max-height:480px;overflow-y:auto;font-size:12px;line-height:1.85;color:var(--ink);background:var(--paper)}
+.contract-body h1{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:500;text-align:center;letter-spacing:0.12em;margin-bottom:4px}
+.contract-body h2{font-size:12px;text-align:center;color:var(--ink2);letter-spacing:0.1em;margin-bottom:20px;font-weight:400}
+.contract-body h3{font-size:12px;font-weight:500;margin:14px 0 6px;border-left:2px solid var(--ink);padding-left:8px}
+.contract-body table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
+.contract-body th{background:var(--paper2);padding:5px 8px;border:0.5px solid var(--line2);font-weight:500;color:var(--ink2);font-size:10px}
+.contract-body td{padding:5px 8px;border:0.5px solid var(--line2)}
+.contract-body .info-grid{display:grid;grid-template-columns:80px 1fr;gap:2px 8px;margin:8px 0;font-size:12px}
+.contract-body .info-label{color:var(--ink3)}
+.contract-body .sig-area{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px}
+.contract-body .sig-block{border-top:0.5px solid var(--ink);padding-top:8px;font-size:11px;color:var(--ink2)}
+
+.divider{border:none;border-top:0.5px solid var(--line);margin:16px 0}
+.alert{padding:10px 14px;border-radius:var(--radius);font-size:12px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px}
+.alert-warn{background:var(--amber-bg);color:var(--amber);border:0.5px solid #f5c87a}
+.alert-info{background:var(--blue-bg);color:var(--blue);border:0.5px solid #a8c8f0}
+
+.page{display:none}
+.page.active{display:block}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.section-title-text{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:500}
+
+.tab-bar{display:flex;gap:2px;border-bottom:0.5px solid var(--line);margin-bottom:16px}
+.tab{padding:8px 14px;font-size:12px;background:none;border:none;cursor:pointer;color:var(--ink3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab:hover{color:var(--ink2)}
+.tab.active{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
+
+.cust-card{background:var(--paper);border:0.5px solid var(--line);border-radius:var(--radius-lg);padding:16px;margin-bottom:10px;transition:all .15s}
+.cust-card:hover{border-color:var(--line2)}
+.cust-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.cust-name{font-size:14px;font-weight:500;color:var(--ink)}
+.cust-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+.cust-meta{display:flex;gap:16px;flex-wrap:wrap}
+.cust-meta-item{font-size:11px;color:var(--ink3)}
+.cust-meta-item strong{color:var(--ink2);font-weight:500}
+.cust-actions{display:flex;gap:6px;margin-top:10px}
+
+.progress-bar{height:4px;background:var(--paper3);border-radius:99px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;background:var(--gold);border-radius:99px;transition:width .3s}
+.empty{text-align:center;padding:40px 20px;color:var(--ink3)}
+.empty-icon{font-size:32px;margin-bottom:12px;opacity:0.4}
+
+/* Loading overlay */
+.loading-overlay{position:fixed;inset:0;background:rgba(250,249,246,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;gap:14px}
+.loading-spinner{width:32px;height:32px;border:2px solid var(--line2);border-top-color:var(--ink);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--ink2)}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:var(--radius-lg);font-size:13px;z-index:200;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.error{background:var(--red)}
+
+/* Step modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:150;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--paper);border-radius:var(--radius-lg);padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto}
+.modal-title{font-family:'Noto Serif TC',serif;font-size:15px;font-weight:500;margin-bottom:16px}
+.step-list{display:flex;flex-direction:column;gap:8px}
+.step-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:0.5px solid var(--line);border-radius:var(--radius);cursor:pointer;transition:all .15s}
+.step-item:hover{background:var(--paper2)}
+.step-item.done{background:var(--green-bg);border-color:#a8d8be}
+.step-item.current{background:var(--gold-bg);border-color:#f0c86a;font-weight:500}
+.step-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px}
+.step-item.done .step-check{background:var(--green);border-color:var(--green);color:white}
+.step-item.current .step-check{background:var(--gold);border-color:var(--gold);color:white}
+
+@media(max-width:768px){
+  .sidebar{width:52px}
+  .sidebar-logo .brand,.sidebar-logo .sub,.nav-section,.nav-item span,.nav-badge,.sync-indicator span{display:none}
+  .nav-icon{margin:0 auto}
+  .nav-item{justify-content:center;padding:12px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .pipeline-wrap{grid-template-columns:repeat(3,1fr)}
+  .form-grid,.form-grid-3{grid-template-columns:1fr}
+  .items-header{display:none}
+  .item-row{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto}
+  .content{padding:16px}
+  .topbar{padding:0 16px}
+}
+@media print{
+  .app-shell{display:block}
+  .sidebar,.topbar,.contract-toolbar,.btn,.cust-actions,.modal-overlay{display:none!important}
+  .main,.content{overflow:visible;height:auto}
+  .contract-body{max-height:none}
+  #page-new-order .card:not(:last-of-type){display:none}
+  .page{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<div id="loading" class="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">連接雲端資料庫...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">FRETWORK</div>
+      <div class="sub">FURNITURE STUDIO</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">主要</div>
+      <div class="nav-item active" onclick="gotoPage('dashboard',this)"><span class="nav-icon">◈</span><span>總覽</span></div>
+      <div class="nav-item" onclick="gotoPage('customers',this)"><span class="nav-icon">◎</span><span>客戶管理</span><span class="nav-badge" id="nb-cust">—</span></div>
+      <div class="nav-item" onclick="gotoPage('new-order',this)"><span class="nav-icon">＋</span><span>建立訂單</span></div>
+      <div class="nav-item" onclick="gotoPage('orders',this)"><span class="nav-icon">≡</span><span>訂單管理</span><span class="nav-badge" id="nb-orders">—</span></div>
+      <div class="nav-section">生產</div>
+      <div class="nav-item" onclick="gotoPage('production',this)"><span class="nav-icon">⊙</span><span>生產看板</span></div>
+      <div class="nav-section">財務</div>
+      <div class="nav-item" onclick="gotoPage('payments',this)"><span class="nav-icon">◇</span><span>收款管理</span><span class="nav-badge" id="nb-pay">—</span></div>
+    </nav>
+    <div class="sync-indicator">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-label">已連線</span>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">總覽</div>
+      <div class="topbar-actions">
+        <button class="btn btn-sm" onclick="gotoPage('new-order',null)">＋ 新增訂單</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- Dashboard -->
+      <div id="page-dashboard" class="page active">
+        <div class="stats-grid" id="dash-stats">
+          <div class="stat"><div class="stat-label">本月訂單</div><div class="stat-value">—</div></div>
+          <div class="stat"><div class="stat-label">待收尾款</div><div class="stat-value">—</div></div>
+          <div class="stat"><div class="stat-label">待跟進</div><div class="stat-value">—</div></div>
+          <div class="stat"><div class="stat-label">本月出貨</div><div class="stat-value">—</div></div>
+        </div>
+        <div id="dash-alerts"></div>
+        <div class="card">
+          <div class="card-title">生產流程看板</div>
+          <div class="pipeline-wrap" id="dash-pipeline"><div style="color:var(--ink3);font-size:13px">載入中...</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">最近訂單</div>
+          <table class="data-table" id="dash-recent"><tbody><tr><td style="padding:20px;color:var(--ink3)">載入中...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- Customers -->
+      <div id="page-customers" class="page">
+        <div class="section-header">
+          <div class="section-title-text">客戶管理</div>
+          <button class="btn btn-primary" onclick="gotoPage('new-order',null)">＋ 新增客戶</button>
+        </div>
+        <div class="tab-bar">
+          <button class="tab active" onclick="filterCustomers('all',this)">全部</button>
+          <button class="tab" onclick="filterCustomers('inquiry',this)">詢問中</button>
+          <button class="tab" onclick="filterCustomers('confirmed',this)">進行中</button>
+          <button class="tab" onclick="filterCustomers('done',this)">已完成</button>
+        </div>
+        <div id="customer-list"></div>
+      </div>
+
+      <!-- New Order -->
+      <div id="page-new-order" class="page">
+        <div class="section-header">
+          <div class="section-title-text">建立訂單</div>
+          <span id="contract-type-label" class="badge badge-confirmed">—</span>
+        </div>
+        <div class="card">
+          <div class="card-title">客戶資料</div>
+          <div class="form-grid">
+            <div class="field"><label>客戶姓名 *</label><input id="f-name" placeholder="王小明" oninput="onFormChange()"></div>
+            <div class="field"><label>聯絡電話</label><input id="f-phone" placeholder="0912-345-678" oninput="onFormChange()"></div>
+            <div class="field form-full"><label>收件地址</label><input id="f-addr" placeholder="台北市..." oninput="onFormChange()"></div>
+            <div class="field"><label>來源管道</label>
+              <select id="f-source">
+                <option value="ig">Instagram</option>
+                <option value="fb">Facebook</option>
+                <option value="line">Line</option>
+                <option value="thread">Threads</option>
+                <option value="phone">電話 / 現場</option>
+              </select>
+            </div>
+            <div class="field"><label>備註</label><input id="f-note" placeholder="客戶偏好或特殊需求..." oninput="onFormChange()"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">訂購品項</div>
+          <div class="items-header">
+            <span>品項名稱</span><span>尺寸</span><span>木種</span><span>塗裝</span><span>單價</span><span>數量</span><span></span>
+          </div>
+          <div id="items-container"></div>
+          <button class="btn btn-sm btn-ghost" onclick="addItem()">＋ 新增品項</button>
+          <hr class="divider">
+          <div class="form-grid">
+            <div class="field"><label>運費</label><input id="f-shipping" type="number" placeholder="3000" oninput="calcSummary()"></div>
+            <div class="field"><label>付款條件</label>
+              <select id="f-deposit-rate" onchange="calcSummary()">
+                <option value="0.5">訂金五成（50%）</option>
+                <option value="1">全款</option>
+                <option value="0.3">訂金三成（30%）</option>
+              </select>
+            </div>
+            <div class="field"><label>簽約日期</label><input id="f-sign-date" type="date" oninput="onFormChange()"></div>
+            <div class="field"><label>預計交期</label><input id="f-delivery" type="date" oninput="onFormChange()"></div>
+          </div>
+          <div class="summary">
+            <div class="sum-row"><span>品項小計</span><span id="s-sub">—</span></div>
+            <div class="sum-row"><span>運費</span><span id="s-ship">—</span></div>
+            <div class="sum-row total"><span>訂單總金額</span><span id="s-total">—</span></div>
+            <div class="sum-row deposit-row"><span id="s-dep-label">訂金（50%）</span><span id="s-dep">—</span></div>
+            <div class="sum-row balance-row"><span>尾款</span><span id="s-bal">—</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">合約預覽</div>
+          <div id="contract-type-indicator" style="font-size:11px;color:var(--ink3);margin-bottom:10px"></div>
+          <div class="contract-box">
+            <div class="contract-toolbar">
+              <span id="contract-version-label">—</span>
+              <button class="btn btn-sm" onclick="window.print()">列印 / 存PDF</button>
+            </div>
+            <div class="contract-body" id="contract-output"></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end">
+            <button class="btn" onclick="generatePurchaseOrderAlert()">產生採購單</button>
+            <button class="btn btn-primary" id="save-btn" onclick="saveOrder()">✓ 確認建立訂單</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders -->
+      <div id="page-orders" class="page">
+        <div class="section-header">
+          <div class="section-title-text">訂單管理</div>
+          <button class="btn btn-primary" onclick="gotoPage('new-order',null)">＋ 新增訂單</button>
+        </div>
+        <div class="tab-bar">
+          <button class="tab active" onclick="filterOrders('all',this)">全部</button>
+          <button class="tab" onclick="filterOrders('confirmed',this)">已下訂</button>
+          <button class="tab" onclick="filterOrders('producing',this)">生產中</button>
+          <button class="tab" onclick="filterOrders('ready',this)">待出貨</button>
+          <button class="tab" onclick="filterOrders('shipped',this)">已出貨</button>
+        </div>
+        <div id="orders-list"></div>
+      </div>
+
+      <!-- Production -->
+      <div id="page-production" class="page">
+        <div class="section-header">
+          <div class="section-title-text">生產看板</div>
+        </div>
+        <div id="production-alerts"></div>
+        <div class="pipeline-wrap" id="production-pipeline"></div>
+      </div>
+
+      <!-- Payments -->
+      <div id="page-payments" class="page">
+        <div class="section-header"><div class="section-title-text">收款管理</div></div>
+        <div class="stats-grid" id="pay-stats"></div>
+        <div class="card">
+          <div class="card-title">待收款訂單</div>
+          <table class="data-table" id="pay-table"></table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Step Modal -->
+<div id="step-modal" style="display:none" class="modal-overlay" onclick="closeStepModal(event)">
+  <div class="modal">
+    <div class="modal-title" id="step-modal-title">工序進度</div>
+    <div class="step-list" id="step-list"></div>
+    <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-sm" onclick="document.getElementById('step-modal').style.display='none'">關閉</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Supabase Config ──────────────────────────────────────────
+const SUPABASE_URL = 'https://bwtcjafpordpzcwctvib.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_hwC3kFgNs1cw2G4F-osgwg_i_jH6Ml7';
+
+async function sb(table, method='GET', body=null, query='') {
+  setSyncing(true);
+  try {
+    const opts = {
+      method,
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': method === 'POST' ? 'return=representation' : method === 'PATCH' ? 'return=representation' : ''
+      }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, opts);
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+    setSyncing(false);
+    if (method === 'DELETE') return true;
+    const text = await res.text();
+    return text ? JSON.parse(text) : [];
+  } catch(e) {
+    setSyncing(false, true);
+    console.error('Supabase error:', e);
+    throw e;
+  }
+}
+
+const q = (table, params='') => sb(table, 'GET', null, '?' + params);
+const insert = (table, data) => sb(table, 'POST', data);
+const update = (table, id_col, id_val, data) => sb(table, 'PATCH', data, `?${id_col}=eq.${encodeURIComponent(id_val)}`);
+const del = (table, id_col, id_val) => sb(table, 'DELETE', null, `?${id_col}=eq.${encodeURIComponent(id_val)}`);
+
+// ─── Sync Indicator ───────────────────────────────────────────
+function setSyncing(on, error=false) {
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  if (error) { dot.className='sync-dot error'; label.textContent='連線失敗'; }
+  else if (on) { dot.className='sync-dot syncing'; label.textContent='同步中...'; }
+  else { dot.className='sync-dot'; label.textContent='已連線'; }
+}
+
+// ─── Toast ────────────────────────────────────────────────────
+function showToast(msg, error=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (error ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 2500);
+}
+
+// ─── Constants ───────────────────────────────────────────────
+const WOOD = ['北美黑胡桃實木','北美白橡實木','緬甸柚木實木','山毛櫸'];
+const SOURCES = {ig:'IG',fb:'FB',line:'LINE',thread:'TH',phone:'TEL'};
+const SOURCE_CLS = {ig:'src-ig',fb:'src-fb',line:'src-line',thread:'src-thread',phone:'src-phone'};
+const STATUS_LABEL = {inquiry:'詢問中',quoted:'已報價',confirmed:'已下訂',producing:'生產中',ready:'待出貨',shipped:'已出貨',done:'已完成'};
+const STATUS_BADGE = {inquiry:'badge-inquiry',quoted:'badge-inquiry',confirmed:'badge-confirmed',producing:'badge-producing',ready:'badge-ready',shipped:'badge-shipped',done:'badge-done'};
+const STEPS_CUSTOM = ['整料','定厚','定長','打榫','磨邊','倒角','細磨','噴漆','包裝'];
+const STEPS_LIFT   = ['整料','定厚','切板','內外牙','倒角','細磨','組裝升降架','噴漆','包裝'];
+const STATUS_FLOW  = ['confirmed','producing','ready','shipped','done'];
+
+let cache = { customers: [], orders: [] };
+
+// ─── Init ─────────────────────────────────────────────────────
+async function init() {
+  try {
+    const [custs, ords] = await Promise.all([
+      q('customers', 'order=created_at.desc'),
+      q('orders', 'order=created_at.desc')
+    ]);
+    cache.customers = custs || [];
+    cache.orders = ords || [];
+    updateBadges();
+    renderDashboard();
+    document.getElementById('loading').style.display = 'none';
+  } catch(e) {
+    document.getElementById('loading').innerHTML = `
+      <div style="text-align:center;padding:20px">
+        <div style="font-size:15px;color:var(--red);margin-bottom:8px">連線失敗</div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">${e.message}</div>
+        <button class="btn btn-primary" onclick="init()">重試</button>
+      </div>`;
+  }
+}
+
+function updateBadges() {
+  document.getElementById('nb-cust').textContent = cache.customers.length;
+  document.getElementById('nb-orders').textContent = cache.orders.length;
+  const pending = cache.orders.filter(o => !o.balance_paid && ['confirmed','producing','ready','shipped'].includes(o.status)).length;
+  document.getElementById('nb-pay').textContent = pending || '';
+}
+
+// ─── Navigation ──────────────────────────────────────────────
+async function gotoPage(id, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  else document.querySelectorAll('.nav-item').forEach(n => {
+    if ((n.getAttribute('onclick')||'').includes("'"+id+"'")) n.classList.add('active');
+  });
+  const titles = {dashboard:'總覽',customers:'客戶管理','new-order':'建立訂單',orders:'訂單管理',production:'生產看板',payments:'收款管理'};
+  document.getElementById('topbar-title').textContent = titles[id]||'';
+
+  if (id === 'dashboard') { await refreshData(); renderDashboard(); }
+  if (id === 'customers') { await refreshData(); renderCustomers('all'); }
+  if (id === 'orders') { await refreshData(); renderOrders('all'); }
+  if (id === 'production') { await refreshData(); renderProduction(); }
+  if (id === 'payments') { await refreshData(); renderPayments(); }
+  if (id === 'new-order') initNewOrder();
+}
+
+async function refreshData() {
+  try {
+    const [custs, ords] = await Promise.all([
+      q('customers', 'order=created_at.desc'),
+      q('orders', 'order=created_at.desc')
+    ]);
+    cache.customers = custs || [];
+    cache.orders = ords || [];
+    updateBadges();
+  } catch(e) { showToast('資料同步失敗', true); }
+}
+
+// ─── Dashboard ───────────────────────────────────────────────
+function renderDashboard() {
+  const orders = cache.orders;
+  const thisMonth = new Date().toISOString().slice(0,7);
+  const monthOrders = orders.filter(o => (o.sign_date||'').slice(0,7) === thisMonth);
+  const pendingBal = orders.filter(o => !o.balance_paid && o.rate < 1 && ['confirmed','producing','ready','shipped'].includes(o.status));
+  const pendingFollow = cache.customers.filter(c => c.status === 'inquiry');
+  const shippedMonth = orders.filter(o => o.shipped_date && o.shipped_date.slice(0,7) === thisMonth);
+
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat"><div class="stat-label">本月訂單</div><div class="stat-value">${monthOrders.length}</div><div class="stat-sub">共 ${orders.length} 張</div></div>
+    <div class="stat"><div class="stat-label">待收尾款</div><div class="stat-value">${pendingBal.length}</div><div class="stat-sub warn">NT$ ${pendingBal.reduce((a,o)=>a+(o.balance||0),0).toLocaleString()}</div></div>
+    <div class="stat"><div class="stat-label">待跟進詢問</div><div class="stat-value">${pendingFollow.length}</div><div class="stat-sub">筆</div></div>
+    <div class="stat"><div class="stat-label">本月出貨</div><div class="stat-value">${shippedMonth.length}</div><div class="stat-sub up">件</div></div>`;
+
+  const urgent = orders.filter(o => {
+    if (!o.delivery_date || ['shipped','done'].includes(o.status)) return false;
+    return Math.ceil((new Date(o.delivery_date)-new Date())/86400000) <= 14;
+  });
+  document.getElementById('dash-alerts').innerHTML = urgent.map(o => {
+    const days = Math.ceil((new Date(o.delivery_date)-new Date())/86400000);
+    return `<div class="alert alert-warn">⚠ 急單：${o.customer_name}（${o.order_id}）交期剩 ${days} 天 · ${STATUS_LABEL[o.status]}</div>`;
+  }).join('');
+
+  renderPipeline('dash-pipeline');
+
+  const recent = [...orders].slice(0,6);
+  const th = `<thead><tr>${['訂單編號','客戶','品項','金額','狀態','交期'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>`;
+  const tb = '<tbody>' + (recent.length ? recent.map(o=>`
+    <tr>
+      <td class="primary">${o.order_id}</td>
+      <td>${o.customer_name}</td>
+      <td>${(o.items||[]).map(i=>i.name).join('、')}</td>
+      <td>NT$ ${(o.total||0).toLocaleString()}</td>
+      <td><span class="badge ${STATUS_BADGE[o.status]}">${STATUS_LABEL[o.status]||o.status}</span></td>
+      <td>${o.delivery_date||'—'}</td>
+    </tr>`).join('') : `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--ink3)">尚無訂單</td></tr>`) + '</tbody>';
+  document.getElementById('dash-recent').innerHTML = th + tb;
+}
+
+// ─── Pipeline ────────────────────────────────────────────────
+const PIPELINE_STAGES = [
+  {key:'inquiry',label:'詢問中'},
+  {key:'confirmed',label:'已下訂'},
+  {key:'producing',label:'生產中'},
+  {key:'ready',label:'待出貨'},
+  {key:'shipped',label:'已出貨'},
+];
+
+function renderPipeline(containerId) {
+  const active = cache.orders.filter(o => o.status !== 'done');
+  let html = '';
+  PIPELINE_STAGES.forEach(stage => {
+    const cards = active.filter(o => o.status === stage.key);
+    html += `<div>
+      <div class="pipeline-header"><span>${stage.label}</span><span class="pipeline-count">${cards.length}</span></div>
+      ${cards.map(o => {
+        const days = o.delivery_date ? Math.ceil((new Date(o.delivery_date)-new Date())/86400000) : 999;
+        const urgent = days >= 0 && days <= 14;
+        return `<div class="pipeline-card${urgent?' urgent':''}" onclick="openStepModal('${o.order_id}')">
+          <div class="pc-name">${o.customer_name}</div>
+          <div class="pc-detail">${(o.items||[]).map(i=>i.name).join(' + ')}</div>
+          ${o.current_step ? `<div class="pc-step">▶ ${o.current_step}</div>` : ''}
+          ${urgent ? `<div style="font-size:10px;color:var(--red);margin-top:3px">交期：${o.delivery_date}</div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+  const el = document.getElementById(containerId);
+  if (el) el.innerHTML = html || '<div style="color:var(--ink3);font-size:13px;padding:12px">尚無進行中訂單</div>';
+}
+
+// ─── Step Modal ───────────────────────────────────────────────
+let currentStepOrderId = null;
+
+function openStepModal(oid) {
+  const o = cache.orders.find(o => o.order_id === oid);
+  if (!o) return;
+  currentStepOrderId = oid;
+  const steps = o.steps || [];
+  const done = o.steps_done || [];
+  const current = o.current_step || '';
+  document.getElementById('step-modal-title').textContent = `${o.customer_name} — 工序進度`;
+  document.getElementById('step-list').innerHTML = steps.map((s,i) => {
+    const isDone = done.includes(s);
+    const isCurrent = s === current;
+    return `<div class="step-item${isDone?' done':isCurrent?' current':''}" onclick="toggleStep('${oid}','${s}')">
+      <div class="step-check">${isDone?'✓':isCurrent?'▶':''}</div>
+      <span>${s}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('step-modal').style.display = 'flex';
+}
+
+function closeStepModal(e) {
+  if (e.target === document.getElementById('step-modal')) {
+    document.getElementById('step-modal').style.display = 'none';
+  }
+}
+
+async function toggleStep(oid, step) {
+  const o = cache.orders.find(o => o.order_id === oid);
+  if (!o) return;
+  const steps = o.steps || [];
+  let done = [...(o.steps_done || [])];
+  const idx = done.indexOf(step);
+  if (idx >= 0) done.splice(idx, 1);
+  else done.push(step);
+
+  const stepIdx = steps.indexOf(step);
+  const nextStep = done.length < steps.length ? steps[done.length] : '';
+  const newStatus = done.length === steps.length ? 'ready' : 'producing';
+
+  try {
+    await update('orders', 'order_id', oid, {
+      steps_done: done,
+      current_step: nextStep,
+      status: newStatus
+    });
+    o.steps_done = done;
+    o.current_step = nextStep;
+    o.status = newStatus;
+    const cust = cache.customers.find(c => c.id === o.customer_id);
+    if (cust) { cust.status = newStatus; await update('customers','id',cust.id,{status:newStatus}); }
+    updateBadges();
+    openStepModal(oid);
+    showToast(idx >= 0 ? `取消：${step}` : `完成：${step}`);
+  } catch(e) { showToast('儲存失敗', true); }
+}
+
+// ─── Customers ───────────────────────────────────────────────
+function renderCustomers(filter) {
+  let list = cache.customers;
+  if (filter === 'inquiry') list = list.filter(c => c.status === 'inquiry');
+  else if (filter === 'confirmed') list = list.filter(c => ['confirmed','producing','ready'].includes(c.status));
+  else if (filter === 'done') list = list.filter(c => ['shipped','done'].includes(c.status));
+
+  const el = document.getElementById('customer-list');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">◎</div><div style="font-size:13px">尚無客戶資料</div></div>`;
+    return;
+  }
+  el.innerHTML = list.map(c => {
+    const orders = cache.orders.filter(o => o.customer_id === c.id);
+    return `<div class="cust-card">
+      <div class="cust-card-header">
+        <div>
+          <div class="cust-name"><span class="src ${SOURCE_CLS[c.source]||'src-phone'}">${SOURCES[c.source]||'—'}</span>${c.name}</div>
+          <div class="cust-sub">${c.phone||''} ${c.address?'· '+c.address:''}</div>
+        </div>
+        <span class="badge ${STATUS_BADGE[c.status]||'badge-inquiry'}">${STATUS_LABEL[c.status]||c.status}</span>
+      </div>
+      <div class="cust-meta">
+        <div class="cust-meta-item">歷史訂單 <strong>${orders.length} 張</strong></div>
+        ${c.note?`<div class="cust-meta-item">備註 <strong>${c.note}</strong></div>`:''}
+      </div>
+      <div class="cust-actions">
+        ${c.status==='inquiry'?`<button class="btn btn-sm btn-primary" onclick="startOrderFor('${c.id}')">建立訂單</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterCustomers(filter, el) {
+  document.querySelectorAll('#page-customers .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderCustomers(filter);
+}
+
+function startOrderFor(custId) {
+  const c = cache.customers.find(c => c.id === custId);
+  if (!c) return;
+  gotoPage('new-order', null);
+  setTimeout(() => {
+    document.getElementById('f-name').value = c.name;
+    document.getElementById('f-phone').value = c.phone||'';
+    document.getElementById('f-addr').value = c.address||'';
+    document.getElementById('f-note').value = c.note||'';
+    document.getElementById('f-source').value = c.source||'ig';
+    onFormChange();
+  }, 50);
+}
+
+// ─── New Order ────────────────────────────────────────────────
+let itemCount = 0;
+
+function initNewOrder() {
+  itemCount = 0;
+  document.getElementById('items-container').innerHTML = '';
+  ['f-name','f-phone','f-addr','f-note','f-shipping'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('f-deposit-rate').value = '0.5';
+  document.getElementById('f-source').value = 'ig';
+  document.getElementById('f-sign-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('f-delivery').value = '';
+  addItem();
+  calcSummary();
+  renderContract();
+}
+
+function addItem() {
+  const i = itemCount++;
+  const row = document.createElement('div');
+  row.className = 'item-row'; row.id = 'item-'+i;
+  row.innerHTML = `
+    <div class="field"><label>品項名稱</label><input id="i${i}-name" placeholder="DT2圓桌 / 升降桌 / TON No.35" oninput="onItemChange()"></div>
+    <div class="field"><label>尺寸</label><input id="i${i}-size" placeholder="Ø110 / 140×70" oninput="onItemChange()"></div>
+    <div class="field"><label>木種</label><select id="i${i}-wood" onchange="onItemChange()">${WOOD.map(w=>`<option>${w}</option>`).join('')}<option>—（非木製）</option></select></div>
+    <div class="field"><label>塗裝</label><input id="i${i}-finish" placeholder="大谷漆裝 / 黑檀木色" oninput="onItemChange()"></div>
+    <div class="field"><label>單價</label><input id="i${i}-price" type="number" placeholder="0" oninput="calcSummary()"></div>
+    <div class="field"><label>數量</label><input id="i${i}-qty" type="number" value="1" min="1" oninput="calcSummary()"></div>
+    <button class="rm-btn" onclick="removeItem(${i})">×</button>`;
+  document.getElementById('items-container').appendChild(row);
+  onItemChange();
+}
+
+function removeItem(i) {
+  const el = document.getElementById('item-'+i);
+  if(el){el.remove();calcSummary();renderContract();}
+}
+
+function getItems() {
+  const items = [];
+  for(let i=0;i<itemCount;i++){
+    const el=document.getElementById('item-'+i);
+    if(!el) continue;
+    items.push({
+      name: document.getElementById('i'+i+'-name')?.value||'',
+      size: document.getElementById('i'+i+'-size')?.value||'',
+      wood: document.getElementById('i'+i+'-wood')?.value||'',
+      finish: document.getElementById('i'+i+'-finish')?.value||'',
+      price: parseFloat(document.getElementById('i'+i+'-price')?.value)||0,
+      qty: parseInt(document.getElementById('i'+i+'-qty')?.value)||1,
+    });
+  }
+  return items.filter(it=>it.name||it.price);
+}
+
+function detectTypes(items) {
+  return {
+    hasLift: items.some(it=>it.name.includes('升降')),
+    hasTon: items.some(it=>it.name.toUpperCase().includes('TON')),
+    hasCustom: items.some(it=>!it.name.toUpperCase().includes('TON')),
+  };
+}
+
+function onItemChange(){calcSummary();renderContract();}
+function onFormChange(){renderContract();}
+
+function calcSummary() {
+  const items = getItems();
+  const sub = items.reduce((a,it)=>a+it.price*it.qty,0);
+  const ship = parseFloat(document.getElementById('f-shipping')?.value)||0;
+  const rate = parseFloat(document.getElementById('f-deposit-rate')?.value)||0.5;
+  const total = sub+ship;
+  const dep = Math.round(total*rate);
+  const bal = total-dep;
+  document.getElementById('s-sub').textContent = sub?'NT$ '+sub.toLocaleString():'—';
+  document.getElementById('s-ship').textContent = ship?'NT$ '+ship.toLocaleString():'—';
+  document.getElementById('s-total').textContent = total?'NT$ '+total.toLocaleString():'—';
+  document.getElementById('s-dep').textContent = dep?'NT$ '+dep.toLocaleString():'—';
+  document.getElementById('s-bal').textContent = bal&&rate<1?'NT$ '+bal.toLocaleString():(rate===1?'（全款）':'—');
+  const labels={'0.5':'訂金（50%）','1':'全款','0.3':'訂金（30%）'};
+  document.getElementById('s-dep-label').textContent = labels[String(rate)]||'訂金';
+  renderContract();
+}
+
+// ─── Contract ─────────────────────────────────────────────────
+function renderContract() {
+  const name = document.getElementById('f-name')?.value||'　　　　';
+  const phone = document.getElementById('f-phone')?.value||'　　　　';
+  const addr = document.getElementById('f-addr')?.value||'　　　　';
+  const signDate = document.getElementById('f-sign-date')?.value||'';
+  const delivery = document.getElementById('f-delivery')?.value||'';
+  const rate = parseFloat(document.getElementById('f-deposit-rate')?.value)||0.5;
+  const ship = parseFloat(document.getElementById('f-shipping')?.value)||0;
+  const items = getItems();
+  const {hasLift,hasTon,hasCustom} = detectTypes(items);
+  const sub = items.reduce((a,it)=>a+it.price*it.qty,0);
+  const total = sub+ship;
+  const dep = Math.round(total*rate);
+  const bal = total-dep;
+  const oid = signDate?signDate.replace(/-/g,'').slice(2)+'-XXXX':'XXXXXXXX-XXXX';
+
+  const types=[];
+  if(hasCustom&&!hasLift&&!hasTon){types.push('一般客製家具合約（十條）');}
+  else if(hasLift&&!hasTon&&!hasCustom){types.push('升降桌合約（含馬達保固）');}
+  else if(hasTon&&!hasCustom&&!hasLift){types.push('TON經銷合約（精簡版）');}
+  else if(items.length){types.push('混合品項合約（保固條款各自獨立）');}
+  const versionLabel = types[0]||'請填寫品項';
+
+  document.getElementById('contract-version-label').textContent = versionLabel;
+  document.getElementById('contract-type-label').textContent = versionLabel||'—';
+
+  const itemRows = items.map(it=>`
+    <tr><td>${it.name}</td><td>${it.size}</td><td>${it.wood}</td><td>${it.finish}</td>
+    <td>${it.price?it.price.toLocaleString()+' / '+it.qty:'—'}</td>
+    <td>${it.price?(it.price*it.qty).toLocaleString():'—'}</td></tr>`).join('');
+  const shipRow = ship?`<tr><td>運費</td><td colspan="3">含安裝</td><td>${ship.toLocaleString()} / 1</td><td>${ship.toLocaleString()}</td></tr>`:'';
+
+  const payClause = rate===1
+    ?`本契約訂單總金額為新台幣 ${total.toLocaleString()} 元整，本公司於收到價金後進行出貨事宜。`
+    :`本契約訂單總金額為新台幣 ${total.toLocaleString()} 元整。<br>客戶應於簽立本契約後三日內給付訂金 <strong>${dep.toLocaleString()}</strong> 元（即總價款之${rate===0.5?'五成':'三成'}）。尾款 <strong>${bal.toLocaleString()}</strong> 元於本公司完成到貨安裝後三日內給付（以現場完成照片為確認依據）。於價款全數付清前，家具所有權仍屬本公司所有。`;
+
+  let warrantyHtml = `<h3>九、保固與維護</h3>
+    <p>本公司自交付日起提供木質承重結構五年保固，所稱木質承重結構，係指家具之承重結構與榫接結構部分，於正常使用情況下，如發生結構鬆動或製作瑕疵，本公司將提供檢視與維修服務。<br>木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
+  if(hasCustom||hasLift) warrantyHtml+=`<p>本公司自製之木質家具及其木質表面，採用日本大谷塗料進行塗裝處理，符合 F☆☆☆☆（F四星）認證標準，具備防水、耐熱100℃、耐酒精特性，屬食品級塗料，無甲醛添加。<br>表面塗裝屬耗材性質，提供<strong>一年保固</strong>。若因使用強酸、強鹼、表面溫度大於100度所致之損壞，不在保固範圍內。</p>`;
+  if(hasLift) warrantyHtml+=`<p><strong>【升降桌】</strong>電動升降桌馬達系統，自交付日起提供<strong>五年保固</strong>。保固範圍限於正常使用情況下之機械或電動故障。因不當使用、外力撞擊、液體滲入、自行拆裝或改裝所致之損壞，不在保固範圍內。</p>`;
+  if(hasTon) warrantyHtml+=`<p><strong>【TON 椅具】</strong>自交付日起提供五年結構保固。木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
+
+  const isTonOnly = hasTon&&!hasCustom&&!hasLift;
+  const wNum = isTonOnly?'五':'十';
+
+  let html = `
+    <h1>FRETWORK FURNITURE</h1><h2>訂製家具契約書</h2>
+    <h3>一、基本資料</h3>
+    <div class="info-grid">
+      <span class="info-label">客戶姓名｜</span><span>${name}</span>
+      <span class="info-label">聯絡電話｜</span><span>${phone}</span>
+      <span class="info-label">收件地址｜</span><span>${addr}</span>
+      <span class="info-label">訂單編號｜</span><span>${oid}</span>
+      <span class="info-label">簽約日期｜</span><span>${signDate||'　　　　'}</span>
+      <span class="info-label">預計交期｜</span><span>${delivery||'　　　　'}</span>
+    </div>
+    <h3>二、訂購內容</h3>
+    <table><thead><tr><th>項目</th><th>尺寸</th><th>木種</th><th>塗裝</th><th>單價/數量</th><th>小計</th></tr></thead>
+    <tbody>${itemRows}${shipRow}</tbody></table>
+    <h3>三、價金與付款方式</h3><p>${payClause}</p>
+    <h3>四、規格與變更</h3>
+    <p>本契約所載規格、尺寸、樣式與用材，以雙方確認之內容為準。若客戶於${isTonOnly?'出貨':'製作'}前提出調整或追加設計需求，應事先與本公司確認；相關費用將依實際變更內容另行報價。${isTonOnly?'':'製作開始後之變更，須經雙方確認並同意後始得辦理。'}</p>`;
+
+  if(!isTonOnly) html+=`
+    <h3>五、取消與履約</h3><p>訂製商品屬客製化製作，客戶於確認訂製後取消契約者，已支付之訂金不予退還。交貨日前十日內取消者，應支付全額價款。若客戶拒絕到貨安裝，視為本公司已完成交付義務。</p>
+    <h3>六、製作與品質</h3><p>本公司於收受訂金後，將依確認圖面與規格進行製作。如未依確認內容製作，本公司將退還訂金。</p>
+    <h3>七、製作期與調整</h3><p>家具為手工製作產品，製作過程可能因細節調整、材料狀況或品質控管因素而產生合理之交期延長。本公司將於必要時主動說明並與客戶確認，以確保最終品質。</p>
+    <h3>八、天然材質說明</h3><p>木材為天然素材，紋理、色澤與節疤均具自然差異。拼接後之色差、紋路變化或少量節點，屬自然現象，非屬瑕疵。</p>`;
+
+  html += warrantyHtml + `
+    <h3>${wNum}、付款資訊</h3>
+    <p>玉山銀行（銀行代碼 808）<br>帳號：1300-940-033-256<br>戶名：黑式設計有限公司<br><br>匯款後請備註客戶姓名或訂單編號，以利核對。</p>
+    <p style="margin-top:20px">以上內容確認無誤後請簽名回傳</p>
+    <div class="sig-area">
+      <div class="sig-block"><div>客戶簽名：</div><div style="height:48px"></div></div>
+      <div class="sig-block"><div>黑式設計有限公司${isTonOnly?' 代表人':''} 簽名：</div>
+        <div style="height:48px;display:flex;align-items:flex-end"><span style="font-family:'Noto Serif TC',serif;font-size:18px;color:var(--ink2)">菜哲均</span></div>
+      </div>
+    </div>`;
+
+  document.getElementById('contract-output').innerHTML = html;
+  const parts=[];
+  if(hasCustom) parts.push('客製家具');
+  if(hasLift) parts.push('升降桌');
+  if(hasTon) parts.push('TON');
+  document.getElementById('contract-type-indicator').textContent = parts.length
+    ? '品項類型：'+parts.join(' + ')+(parts.length>1?' → 自動合併保固條款':'')
+    : '請填寫品項名稱';
+}
+
+// ─── Save Order ───────────────────────────────────────────────
+async function saveOrder() {
+  const name = document.getElementById('f-name')?.value?.trim();
+  if(!name){showToast('請填寫客戶姓名',true);return;}
+  const items = getItems();
+  if(!items.length){showToast('請至少新增一項品項',true);return;}
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true; btn.textContent = '儲存中...';
+
+  try {
+    const rate = parseFloat(document.getElementById('f-deposit-rate')?.value)||0.5;
+    const ship = parseFloat(document.getElementById('f-shipping')?.value)||0;
+    const sub = items.reduce((a,it)=>a+it.price*it.qty,0);
+    const total = sub+ship;
+    const dep = Math.round(total*rate);
+    const bal = total-dep;
+    const signDate = document.getElementById('f-sign-date')?.value||new Date().toISOString().slice(0,10);
+
+    // Get next IDs from settings
+    const [orderSetting] = await q('settings','key=eq.next_order_id&select=value');
+    const [custSetting] = await q('settings','key=eq.next_cust_id&select=value');
+    const nextOrderNum = parseInt(orderSetting?.value||1);
+    const nextCustNum = parseInt(custSetting?.value||1);
+
+    const dateStr = signDate.replace(/-/g,'').slice(2);
+    const orderId = dateStr+'-'+String(nextOrderNum).padStart(4,'0');
+    const custId = 'C'+String(nextCustNum).padStart(4,'0');
+
+    // Upsert customer
+    let cust = cache.customers.find(c=>c.name===name);
+    if(!cust) {
+      const [newCust] = await insert('customers', {
+        id: custId,
+        name, phone: document.getElementById('f-phone')?.value||'',
+        address: document.getElementById('f-addr')?.value||'',
+        source: document.getElementById('f-source')?.value||'ig',
+        note: document.getElementById('f-note')?.value||'',
+        status: 'confirmed'
+      });
+      cust = newCust;
+      await update('settings','key','next_cust_id',{value:String(nextCustNum+1)});
+    } else {
+      await update('customers','id',cust.id,{status:'confirmed'});
+    }
+
+    const {hasLift} = detectTypes(items);
+    const steps = hasLift?[...['整料','定厚','切板','內外牙','倒角','細磨','組裝升降架','噴漆','包裝']]:
+                          [...['整料','定厚','定長','打榫','磨邊','倒角','細磨','噴漆','包裝']];
+
+    await insert('orders', {
+      order_id: orderId,
+      customer_id: cust?.id||custId,
+      customer_name: name,
+      items: items,
+      shipping: ship, total, deposit: dep, balance: bal,
+      deposit_paid: false, balance_paid: false, rate,
+      sign_date: signDate,
+      delivery_date: document.getElementById('f-delivery')?.value||null,
+      status: 'confirmed',
+      steps, current_step: '', steps_done: []
+    });
+
+    await update('settings','key','next_order_id',{value:String(nextOrderNum+1)});
+    await refreshData();
+    showToast(`訂單 ${orderId} 建立成功！`);
+    gotoPage('orders',null);
+  } catch(e) {
+    showToast('建立失敗：'+e.message, true);
+  } finally {
+    btn.disabled=false; btn.textContent='✓ 確認建立訂單';
+  }
+}
+
+// ─── Orders ──────────────────────────────────────────────────
+function renderOrders(filter) {
+  let orders = cache.orders;
+  if(filter!=='all') orders = orders.filter(o=>o.status===filter);
+  const el = document.getElementById('orders-list');
+  if(!orders.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">≡</div><div style="font-size:13px">尚無訂單</div></div>`;
+    return;
+  }
+  el.innerHTML = orders.map(o=>{
+    const prog = o.steps_done&&o.steps ? Math.round((o.steps_done.length/o.steps.length)*100) : 0;
+    return `<div class="cust-card">
+      <div class="cust-card-header">
+        <div>
+          <div class="cust-name">${o.order_id} · ${o.customer_name}</div>
+          <div class="cust-sub">${(o.items||[]).map(i=>i.name+(i.size?' '+i.size:'')).join(' + ')}</div>
+        </div>
+        <span class="badge ${STATUS_BADGE[o.status]}">${STATUS_LABEL[o.status]}</span>
+      </div>
+      <div class="cust-meta">
+        <div class="cust-meta-item">總金額 <strong>NT$ ${(o.total||0).toLocaleString()}</strong></div>
+        <div class="cust-meta-item">訂金 <strong style="color:${o.deposit_paid?'var(--green)':'var(--amber)'}">
+          ${o.deposit_paid?'✓ 已收':'待收 NT$ '+(o.deposit||0).toLocaleString()}</strong></div>
+        <div class="cust-meta-item">尾款 <strong style="color:${o.balance_paid?'var(--green)':o.rate===1?'var(--ink3)':'var(--amber)'}">
+          ${o.rate===1?'全款':o.balance_paid?'✓ 已收':'待收 NT$ '+(o.balance||0).toLocaleString()}</strong></div>
+        ${o.delivery_date?`<div class="cust-meta-item">交期 <strong>${o.delivery_date}</strong></div>`:''}
+      </div>
+      ${o.status==='producing'?`<div style="margin-top:8px">
+        <div style="font-size:10px;color:var(--ink3);margin-bottom:4px">進度 ${prog}%${o.current_step?' · 目前工序：'+o.current_step:''}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
+      </div>`:''}
+      <div class="cust-actions">
+        <button class="btn btn-sm" onclick="openStepModal('${o.order_id}')">工序進度</button>
+        <button class="btn btn-sm" onclick="advanceStatus('${o.order_id}')">推進狀態</button>
+        ${!o.deposit_paid?`<button class="btn btn-sm" onclick="markPaid('${o.order_id}','deposit')">✓ 收訂金</button>`:''}
+        ${!o.balance_paid&&o.rate<1&&['ready','shipped'].includes(o.status)?`<button class="btn btn-sm" onclick="markPaid('${o.order_id}','balance')">✓ 收尾款</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterOrders(filter, el) {
+  document.querySelectorAll('#page-orders .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderOrders(filter);
+}
+
+async function advanceStatus(oid) {
+  const o = cache.orders.find(o=>o.order_id===oid);
+  if(!o) return;
+  const idx = STATUS_FLOW.indexOf(o.status);
+  if(idx>=STATUS_FLOW.length-1) return;
+  const newStatus = STATUS_FLOW[idx+1];
+  const updates = {status:newStatus};
+  if(newStatus==='shipped') updates.shipped_date = new Date().toISOString().slice(0,10);
+  try {
+    await update('orders','order_id',oid,updates);
+    o.status = newStatus;
+    if(updates.shipped_date) o.shipped_date = updates.shipped_date;
+    const cust = cache.customers.find(c=>c.id===o.customer_id);
+    if(cust){cust.status=newStatus;await update('customers','id',cust.id,{status:newStatus});}
+    updateBadges();
+    renderOrders('all');
+    document.querySelectorAll('#page-orders .tab').forEach((t,i)=>{if(i===0)t.classList.add('active');else t.classList.remove('active');});
+    showToast(`狀態更新：${STATUS_LABEL[newStatus]}`);
+  } catch(e){showToast('更新失敗',true);}
+}
+
+async function markPaid(oid, type) {
+  const o = cache.orders.find(o=>o.order_id===oid);
+  if(!o) return;
+  const field = type==='deposit'?'deposit_paid':'balance_paid';
+  try {
+    await update('orders','order_id',oid,{[field]:true});
+    o[field]=true;
+    updateBadges();
+    renderOrders('all');
+    renderPayments();
+    showToast(type==='deposit'?'訂金已收款':'尾款已收款');
+  } catch(e){showToast('更新失敗',true);}
+}
+
+// ─── Production ──────────────────────────────────────────────
+function renderProduction() {
+  const urgent = cache.orders.filter(o=>{
+    if(!o.delivery_date||['shipped','done'].includes(o.status)) return false;
+    return Math.ceil((new Date(o.delivery_date)-new Date())/86400000)<=14;
+  });
+  document.getElementById('production-alerts').innerHTML = urgent.map(o=>{
+    const days=Math.ceil((new Date(o.delivery_date)-new Date())/86400000);
+    return `<div class="alert alert-warn">⚠ 急單：${o.customer_name}（${o.order_id}）— 剩 ${days} 天，狀態：${STATUS_LABEL[o.status]}</div>`;
+  }).join('');
+  renderPipeline('production-pipeline');
+}
+
+// ─── Payments ────────────────────────────────────────────────
+function renderPayments() {
+  const orders = cache.orders;
+  const pendingDep = orders.filter(o=>!o.deposit_paid&&o.status!=='inquiry');
+  const pendingBal = orders.filter(o=>!o.balance_paid&&o.rate<1&&['ready','shipped'].includes(o.status));
+  const totalDep = pendingDep.reduce((a,o)=>a+(o.deposit||0),0);
+  const totalBal = pendingBal.reduce((a,o)=>a+(o.balance||0),0);
+  const received = orders.filter(o=>o.deposit_paid).reduce((a,o)=>a+(o.deposit||0),0)
+                 + orders.filter(o=>o.balance_paid).reduce((a,o)=>a+(o.balance||0),0);
+
+  document.getElementById('pay-stats').innerHTML=`
+    <div class="stat"><div class="stat-label">待收訂金</div><div class="stat-value">${pendingDep.length}</div><div class="stat-sub warn">NT$ ${totalDep.toLocaleString()}</div></div>
+    <div class="stat"><div class="stat-label">待收尾款</div><div class="stat-value">${pendingBal.length}</div><div class="stat-sub warn">NT$ ${totalBal.toLocaleString()}</div></div>
+    <div class="stat"><div class="stat-label">已收款合計</div><div class="stat-value" style="font-size:20px">NT$ ${received.toLocaleString()}</div><div class="stat-sub up">已入帳</div></div>
+    <div class="stat"><div class="stat-label">訂單總數</div><div class="stat-value">${orders.length}</div><div class="stat-sub">筆</div></div>`;
+
+  const pending = orders.filter(o=>!o.deposit_paid||(!o.balance_paid&&o.rate<1&&['ready','shipped'].includes(o.status)));
+  const th=`<thead><tr>${['訂單編號','客戶','金額','訂金','尾款','交期','操作'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>`;
+  const tb='<tbody>'+(pending.length?pending.map(o=>`
+    <tr>
+      <td class="primary">${o.order_id}</td><td>${o.customer_name}</td>
+      <td>NT$ ${(o.total||0).toLocaleString()}</td>
+      <td style="color:${o.deposit_paid?'var(--green)':'var(--amber)'}">${o.deposit_paid?'✓ 已收':'待收 NT$ '+(o.deposit||0).toLocaleString()}</td>
+      <td style="color:${o.balance_paid?'var(--green)':o.rate===1?'var(--ink3)':'var(--amber)'}">
+        ${o.rate===1?'全款':o.balance_paid?'✓ 已收':'待收 NT$ '+(o.balance||0).toLocaleString()}</td>
+      <td>${o.delivery_date||'—'}</td>
+      <td style="display:flex;gap:4px;flex-wrap:wrap">
+        ${!o.deposit_paid?`<button class="btn btn-sm" onclick="markPaid('${o.order_id}','deposit')">✓ 訂金</button>`:''}
+        ${!o.balance_paid&&o.rate<1&&['ready','shipped'].includes(o.status)?`<button class="btn btn-sm" onclick="markPaid('${o.order_id}','balance')">✓ 尾款</button>`:''}
+      </td>
+    </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--ink3)">目前無待收款</td></tr>`)+'</tbody>';
+  document.getElementById('pay-table').innerHTML=th+tb;
+}
+
+function generatePurchaseOrderAlert() {
+  const items=getItems();
+  if(!items.length){showToast('請先填寫品項',true);return;}
+  const name=document.getElementById('f-name')?.value||'（客戶）';
+  let msg=`【材料採購單】\n客戶：${name}\n\n`;
+  items.forEach((it,i)=>{
+    if(it.wood&&it.wood!=='—（非木製）'){
+      msg+=`${i+1}. ${it.name}\n   木種：${it.wood}\n   尺寸：${it.size||'待確認'}\n   塗裝：${it.finish||'—'}\n   數量：${it.qty} 件\n\n`;
+    }
+  });
+  alert(msg+'（正式採購單PDF將在下一版本完善）');
+}
+
+// ─── Start ────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
