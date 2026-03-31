@@ -292,6 +292,82 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
         <div id="customer-list"></div>
       </div>
 
+      <!-- Customer Detail Page -->
+      <div id="page-customer-detail" class="page">
+        <div class="section-header">
+          <button class="btn btn-sm btn-ghost" onclick="gotoPage('customers',null)" style="display:flex;align-items:center;gap:6px">← 返回客戶列表</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-sm btn-primary" onclick="startOrderFromDetail()">建立訂單</button>
+            <button class="btn btn-sm" style="color:var(--red)" onclick="confirmDeleteFromDetail()">刪除</button>
+          </div>
+        </div>
+
+        <!-- 客戶基本資料 -->
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <div id="cd-avatar" style="width:48px;height:48px;border-radius:50%;background:var(--paper2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;color:var(--ink2);flex-shrink:0"></div>
+            <div>
+              <div id="cd-name-display" style="font-size:18px;font-weight:500;color:var(--ink)"></div>
+              <div id="cd-source-display" style="font-size:12px;color:var(--ink3);margin-top:2px"></div>
+            </div>
+            <div style="margin-left:auto">
+              <span id="cd-status-badge" class="badge"></span>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label>姓名 / ID</label>
+              <input id="cd-name" onblur="updateDetailField('name',this.value)">
+            </div>
+            <div class="field"><label>聯絡電話</label>
+              <input id="cd-phone" placeholder="尚未填寫" onblur="updateDetailField('phone',this.value)">
+            </div>
+            <div class="field form-full"><label>地址</label>
+              <input id="cd-address" placeholder="尚未填寫" onblur="updateDetailField('address',this.value)">
+            </div>
+            <div class="field"><label>來源平台</label>
+              <select id="cd-source" onchange="updateDetailField('source',this.value)">
+                <option value="ig">Instagram</option>
+                <option value="fb">Facebook</option>
+                <option value="line">Line</option>
+                <option value="thread">Threads</option>
+                <option value="phone">電話 / 現場</option>
+              </select>
+            </div>
+            <div class="field"><label>跟進狀態</label>
+              <select id="cd-status" onchange="updateDetailField('status',this.value);updateDetailBadge()">
+                <option value="inquiry">詢問中</option>
+                <option value="confirmed">已下訂</option>
+                <option value="producing">生產中</option>
+                <option value="shipped">已出貨</option>
+                <option value="done">已完成</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 跟進紀錄 -->
+        <div class="card">
+          <div class="card-title">跟進紀錄</div>
+          <div class="form-grid">
+            <div class="field"><label>預約到店日期</label>
+              <input id="cd-appt" type="date" onblur="updateDetailField('appointment_date',this.value)">
+            </div>
+            <div class="field form-full"><label>備註 / 詢問內容</label>
+              <textarea id="cd-note" placeholder="詢問什麼產品、特殊需求..." style="min-height:80px" onblur="updateDetailField('note',this.value)"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 訂單紀錄 -->
+        <div class="card">
+          <div class="card-title">訂單紀錄</div>
+          <div id="cd-orders"></div>
+          <div style="margin-top:12px">
+            <button class="btn btn-sm btn-primary" onclick="startOrderFromDetail()">＋ 建立新訂單</button>
+          </div>
+        </div>
+      </div>
+
       <!-- New Order -->
       <div id="page-new-order" class="page">
         <div class="section-header">
@@ -1500,6 +1576,92 @@ function confirmDeleteFromModal() {
   confirmDelete('customer', c.id, c.name);
 }
 
+
+// ─── 客戶詳情頁 ──────────────────────────────────────────────
+let currentDetailCustomerId = null;
+
+function openCustomerDetail(cid) {
+  const c = cache.customers.find(c => c.id === cid);
+  if (!c) return;
+  currentDetailCustomerId = cid;
+
+  // 頭像首字
+  const initial = (c.name||'?')[0].toUpperCase();
+  document.getElementById('cd-avatar').textContent = initial;
+  document.getElementById('cd-name-display').textContent = c.name || '—';
+
+  const sourceLabel = {ig:'Instagram',fb:'Facebook',line:'Line',thread:'Threads',phone:'電話/現場'}[c.source]||'—';
+  const sourceCls = {ig:'src-ig',fb:'src-fb',line:'src-line',thread:'src-thread',phone:'src-phone'}[c.source]||'src-phone';
+  document.getElementById('cd-source-display').innerHTML = `<span class="src ${sourceCls}">${SOURCES[c.source]||'—'}</span> 來自 ${sourceLabel}`;
+
+  document.getElementById('cd-name').value    = c.name || '';
+  document.getElementById('cd-phone').value   = c.phone || '';
+  document.getElementById('cd-address').value = c.address || '';
+  document.getElementById('cd-source').value  = c.source || 'ig';
+  document.getElementById('cd-status').value  = c.status || 'inquiry';
+  document.getElementById('cd-appt').value    = c.appointment_date || '';
+  document.getElementById('cd-note').value    = c.note || '';
+  updateDetailBadge();
+
+  // 訂單紀錄
+  const orders = cache.orders.filter(o => o.customer_id === cid && !o.deleted_at);
+  const ordersEl = document.getElementById('cd-orders');
+  if (!orders.length) {
+    ordersEl.innerHTML = '<div style="font-size:12px;color:var(--ink3);padding:8px 0">尚無訂單紀錄</div>';
+  } else {
+    ordersEl.innerHTML = orders.map(o => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid var(--line)">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--ink)">${o.order_id}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">${(o.items||[]).map(i=>i.name+(i.size?' '+i.size:'')).join(' + ')}</div>
+          ${o.delivery_date?`<div style="font-size:11px;color:var(--ink3)">交期：${o.delivery_date}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px">NT$ ${(o.total||0).toLocaleString()}</div>
+          <span class="badge ${STATUS_BADGE[o.status]||''}" style="margin-top:4px;display:inline-block">${STATUS_LABEL[o.status]||o.status}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  gotoPage('customer-detail', null);
+}
+
+function updateDetailBadge() {
+  const status = document.getElementById('cd-status')?.value || 'inquiry';
+  const badge = document.getElementById('cd-status-badge');
+  if (badge) {
+    badge.className = 'badge ' + (STATUS_BADGE[status]||'badge-inquiry');
+    badge.textContent = STATUS_LABEL[status]||status;
+  }
+}
+
+async function updateDetailField(field, value) {
+  if (!currentDetailCustomerId) return;
+  try {
+    await update('customers', 'id', currentDetailCustomerId, { [field]: value });
+    const c = cache.customers.find(c => c.id === currentDetailCustomerId);
+    if (c) {
+      c[field] = value;
+      if (field === 'name') {
+        document.getElementById('cd-name-display').textContent = value;
+        document.getElementById('cd-avatar').textContent = (value||'?')[0].toUpperCase();
+      }
+    }
+    showToast('已儲存');
+  } catch(e) { showToast('儲存失敗', true); }
+}
+
+function startOrderFromDetail() {
+  if (!currentDetailCustomerId) return;
+  startOrderFor(currentDetailCustomerId);
+}
+
+function confirmDeleteFromDetail() {
+  const c = cache.customers.find(c => c.id === currentDetailCustomerId);
+  if (!c) return;
+  confirmDelete('customer', c.id, c.name);
+}
+
 // ─── Init ─────────────────────────────────────────────────────
 async function init() {
   try {
@@ -1561,7 +1723,7 @@ async function gotoPage(id, navEl) {
   else document.querySelectorAll('.nav-item').forEach(n => {
     if ((n.getAttribute('onclick')||'').includes("'"+id+"'")) n.classList.add('active');
   });
-  const titles = {dashboard:'總覽',customers:'客戶管理','new-order':'建立訂單',orders:'訂單管理',production:'生產看板',payments:'收款管理',trash:'暫存區'};
+  const titles = {dashboard:'總覽',customers:'客戶管理','customer-detail':'客戶詳情','new-order':'建立訂單',orders:'訂單管理',production:'生產看板',payments:'收款管理',trash:'暫存區'};
   document.getElementById('topbar-title').textContent = titles[id]||'';
 
   if (id === 'dashboard') { await refreshData(); renderDashboard(); }
@@ -1742,7 +1904,7 @@ function renderCustomers(filter) {
         ${c.note?`<div class="cust-meta-item">備註 <strong>${c.note}</strong></div>`:''}
       </div>
       <div class="cust-actions">
-        <button class="btn btn-sm btn-primary" onclick="openCustomerModal('${c.id}')">查看詳情</button>
+        <button class="btn btn-sm btn-primary" onclick="openCustomerDetail('${c.id}')">查看詳情</button>
       </div>
     </div>`;
   }).join('');
