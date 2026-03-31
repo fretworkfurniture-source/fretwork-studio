@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>FRETWORK FURNITURE — 管理系統</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -18,12 +18,12 @@
   --amber:#7a4e00;--amber-bg:#fdf3e0;
   --radius:6px;--radius-lg:10px;
 }
-body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--ink);font-size:14px;min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue',sans-serif;background:var(--paper3);color:var(--ink);font-size:14px;min-height:100vh}
 
 .app-shell{display:flex;height:100vh;overflow:hidden}
 .sidebar{width:200px;background:var(--ink);color:var(--paper);display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
 .sidebar-logo{padding:24px 20px 20px;border-bottom:0.5px solid rgba(255,255,255,0.1)}
-.sidebar-logo .brand{font-family:'Noto Serif TC',serif;font-size:13px;font-weight:500;letter-spacing:0.12em;color:#fff}
+.sidebar-logo .brand{font-family:'Georgia','PingFang TC',serif;font-size:13px;font-weight:500;letter-spacing:0.12em;color:#fff}
 .sidebar-logo .sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;letter-spacing:0.08em}
 .sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
 .nav-section{font-size:9px;font-weight:500;color:rgba(255,255,255,0.3);letter-spacing:0.1em;padding:12px 20px 4px;text-transform:uppercase}
@@ -41,7 +41,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
 
 .main{flex:1;overflow-y:auto;background:var(--paper3)}
 .topbar{background:var(--paper);border-bottom:0.5px solid var(--line);padding:0 28px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.topbar-title{font-family:'Noto Serif TC',serif;font-size:15px;font-weight:500}
+.topbar-title{font-family:'Georgia','PingFang TC',serif;font-size:15px;font-weight:500}
 .topbar-actions{display:flex;gap:8px;align-items:center}
 .content{padding:24px 28px}
 
@@ -52,7 +52,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .stat{background:var(--paper);border:0.5px solid var(--line);border-radius:var(--radius-lg);padding:16px 18px}
 .stat-label{font-size:10px;color:var(--ink3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px}
-.stat-value{font-size:26px;font-weight:300;color:var(--ink);font-family:'Noto Serif TC',serif}
+.stat-value{font-size:26px;font-weight:300;color:var(--ink);font-family:'Georgia','PingFang TC',serif}
 .stat-sub{font-size:11px;color:var(--ink3);margin-top:4px}
 .stat-sub.up{color:var(--green)}
 .stat-sub.warn{color:var(--amber)}
@@ -124,7 +124,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
 .contract-toolbar{background:var(--paper2);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid var(--line)}
 .contract-toolbar span{font-size:12px;color:var(--ink2);font-weight:500}
 .contract-body{padding:28px 32px;max-height:480px;overflow-y:auto;font-size:12px;line-height:1.85;color:var(--ink);background:var(--paper)}
-.contract-body h1{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:500;text-align:center;letter-spacing:0.12em;margin-bottom:4px}
+.contract-body h1{font-family:'Georgia','PingFang TC',serif;font-size:16px;font-weight:500;text-align:center;letter-spacing:0.12em;margin-bottom:4px}
 .contract-body h2{font-size:12px;text-align:center;color:var(--ink2);letter-spacing:0.1em;margin-bottom:20px;font-weight:400}
 .contract-body h3{font-size:12px;font-weight:500;margin:14px 0 6px;border-left:2px solid var(--ink);padding-left:8px}
 .contract-body table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
@@ -133,7 +133,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
 .contract-body .info-grid{display:grid;grid-template-columns:80px 1fr;gap:2px 8px;margin:8px 0;font-size:12px}
 .contract-body .info-label{color:var(--ink3)}
 .contract-body .sig-area{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px}
-.contract-body .sig-block{border-top:0.5px solid var(--ink);padding-top:8px;font-size:11px;color:var(--ink2)}
+.contract-body .sig-block{padding-top:8px;font-size:11px;color:var(--ink2)}.contract-body .sig-block.has-line{border-top:0.5px solid var(--ink)}
 
 .divider{border:none;border-top:0.5px solid var(--line);margin:16px 0}
 .alert{padding:10px 14px;border-radius:var(--radius);font-size:12px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px}
@@ -143,7 +143,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
 .page{display:none}
 .page.active{display:block}
 .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.section-title-text{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:500}
+.section-title-text{font-family:'Georgia','PingFang TC',serif;font-size:16px;font-weight:500}
 
 .tab-bar{display:flex;gap:2px;border-bottom:0.5px solid var(--line);margin-bottom:16px}
 .tab{padding:8px 14px;font-size:12px;background:none;border:none;cursor:pointer;color:var(--ink3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
@@ -179,7 +179,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
 /* Step modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:150;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal{background:var(--paper);border-radius:var(--radius-lg);padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto}
-.modal-title{font-family:'Noto Serif TC',serif;font-size:15px;font-weight:500;margin-bottom:16px}
+.modal-title{font-family:'Georgia','PingFang TC',serif;font-size:15px;font-weight:500;margin-bottom:16px}
 .step-list{display:flex;flex-direction:column;gap:8px}
 .step-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:0.5px solid var(--line);border-radius:var(--radius);cursor:pointer;transition:all .15s}
 .step-item:hover{background:var(--paper2)}
@@ -298,7 +298,24 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
           <div class="form-grid">
             <div class="field"><label>客戶姓名 *</label><input id="f-name" placeholder="王小明" oninput="onFormChange()"></div>
             <div class="field"><label>聯絡電話</label><input id="f-phone" placeholder="0912-345-678" oninput="onFormChange()"></div>
-            <div class="field form-full"><label>收件地址</label><input id="f-addr" placeholder="台北市..." oninput="onFormChange()"></div>
+            <div class="field form-full">
+              <label>收件地址</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+                <div style="position:relative;flex-shrink:0">
+                  <input id="f-zip" placeholder="郵遞區號" maxlength="6"
+                    style="font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper);color:var(--ink);width:100px;outline:none"
+                    oninput="onZipInput(this.value)" autocomplete="off">
+                  <div id="zip-dropdown" style="display:none;position:absolute;top:100%;left:0;background:var(--paper);border:0.5px solid var(--line2);border-radius:var(--radius);z-index:50;max-height:200px;overflow-y:auto;min-width:220px;box-shadow:0 4px 12px rgba(0,0,0,0.1)"></div>
+                </div>
+                <input id="f-city" placeholder="縣市" readonly
+                  style="font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper2);color:var(--ink);width:90px;outline:none">
+                <input id="f-district" placeholder="區域" readonly
+                  style="font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper2);color:var(--ink);width:90px;outline:none">
+                <input id="f-addr" placeholder="路/街/巷/號（無門牌可留空）"
+                  style="font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper);color:var(--ink);flex:1;min-width:160px;outline:none"
+                  oninput="onFormChange()">
+              </div>
+            </div>
             <div class="field"><label>來源管道</label>
               <select id="f-source">
                 <option value="ig">Instagram</option>
@@ -411,7 +428,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--paper3);color:var(--
 <script>
 // ─── Supabase Config ──────────────────────────────────────────
 const SUPABASE_URL = 'https://bwtcjafpordpzcwctvib.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_hwC3kFgNs1cw2G4F-osgwg_i_jH6Ml7';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNqYWZwb3JkcHpjd2N0dmliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTcyODgsImV4cCI6MjA5MDQzMzI4OH0.wMdhKweODPR_H703KQITgNKMxL3nXfE5_vbh5P3sLMA';
 
 async function sb(table, method='GET', body=null, query='') {
   setSyncing(true);
@@ -476,9 +493,269 @@ const STATUS_FLOW  = ['confirmed','producing','ready','shipped','done'];
 
 let cache = { customers: [], orders: [] };
 
+
+// ─── 台灣郵遞區號資料庫 ──────────────────────────────────────
+const TW_ZIP = [
+  // 台北市
+  {zip:'100',city:'台北市',district:'中正區'},{zip:'103',city:'台北市',district:'大同區'},
+  {zip:'104',city:'台北市',district:'中山區'},{zip:'105',city:'台北市',district:'松山區'},
+  {zip:'106',city:'台北市',district:'大安區'},{zip:'108',city:'台北市',district:'萬華區'},
+  {zip:'110',city:'台北市',district:'信義區'},{zip:'111',city:'台北市',district:'士林區'},
+  {zip:'112',city:'台北市',district:'北投區'},{zip:'114',city:'台北市',district:'內湖區'},
+  {zip:'115',city:'台北市',district:'南港區'},{zip:'116',city:'台北市',district:'文山區'},
+  // 基隆市
+  {zip:'200',city:'基隆市',district:'仁愛區'},{zip:'201',city:'基隆市',district:'信義區'},
+  {zip:'202',city:'基隆市',district:'中正區'},{zip:'203',city:'基隆市',district:'中山區'},
+  {zip:'204',city:'基隆市',district:'安樂區'},{zip:'205',city:'基隆市',district:'暖暖區'},
+  {zip:'206',city:'基隆市',district:'七堵區'},
+  // 新北市
+  {zip:'207',city:'新北市',district:'萬里區'},{zip:'208',city:'新北市',district:'金山區'},
+  {zip:'220',city:'新北市',district:'板橋區'},{zip:'221',city:'新北市',district:'汐止區'},
+  {zip:'222',city:'新北市',district:'深坑區'},{zip:'223',city:'新北市',district:'石碇區'},
+  {zip:'224',city:'新北市',district:'瑞芳區'},{zip:'226',city:'新北市',district:'平溪區'},
+  {zip:'227',city:'新北市',district:'雙溪區'},{zip:'228',city:'新北市',district:'貢寮區'},
+  {zip:'231',city:'新北市',district:'新店區'},{zip:'232',city:'新北市',district:'坪林區'},
+  {zip:'233',city:'新北市',district:'烏來區'},{zip:'234',city:'新北市',district:'永和區'},
+  {zip:'235',city:'新北市',district:'中和區'},{zip:'236',city:'新北市',district:'土城區'},
+  {zip:'237',city:'新北市',district:'三峽區'},{zip:'238',city:'新北市',district:'樹林區'},
+  {zip:'239',city:'新北市',district:'鶯歌區'},{zip:'241',city:'新北市',district:'三重區'},
+  {zip:'242',city:'新北市',district:'新莊區'},{zip:'243',city:'新北市',district:'泰山區'},
+  {zip:'244',city:'新北市',district:'林口區'},{zip:'247',city:'新北市',district:'蘆洲區'},
+  {zip:'248',city:'新北市',district:'五股區'},{zip:'249',city:'新北市',district:'八里區'},
+  {zip:'251',city:'新北市',district:'淡水區'},{zip:'252',city:'新北市',district:'三芝區'},
+  {zip:'253',city:'新北市',district:'石門區'},
+  // 宜蘭縣
+  {zip:'260',city:'宜蘭縣',district:'宜蘭市'},{zip:'261',city:'宜蘭縣',district:'頭城鎮'},
+  {zip:'262',city:'宜蘭縣',district:'礁溪鄉'},{zip:'263',city:'宜蘭縣',district:'壯圍鄉'},
+  {zip:'264',city:'宜蘭縣',district:'員山鄉'},{zip:'265',city:'宜蘭縣',district:'羅東鎮'},
+  {zip:'266',city:'宜蘭縣',district:'三星鄉'},{zip:'267',city:'宜蘭縣',district:'大同鄉'},
+  {zip:'268',city:'宜蘭縣',district:'五結鄉'},{zip:'269',city:'宜蘭縣',district:'冬山鄉'},
+  {zip:'270',city:'宜蘭縣',district:'蘇澳鎮'},{zip:'272',city:'宜蘭縣',district:'南澳鄉'},
+  // 桃園市
+  {zip:'320',city:'桃園市',district:'中壢區'},{zip:'324',city:'桃園市',district:'平鎮區'},
+  {zip:'325',city:'桃園市',district:'龍潭區'},{zip:'326',city:'桃園市',district:'楊梅區'},
+  {zip:'327',city:'桃園市',district:'新屋區'},{zip:'328',city:'桃園市',district:'觀音區'},
+  {zip:'330',city:'桃園市',district:'桃園區'},{zip:'333',city:'桃園市',district:'龜山區'},
+  {zip:'334',city:'桃園市',district:'八德區'},{zip:'335',city:'桃園市',district:'大溪區'},
+  {zip:'336',city:'桃園市',district:'復興區'},{zip:'337',city:'桃園市',district:'大園區'},
+  {zip:'338',city:'桃園市',district:'蘆竹區'},
+  // 新竹市
+  {zip:'300',city:'新竹市',district:'東區'},{zip:'300',city:'新竹市',district:'北區'},
+  {zip:'300',city:'新竹市',district:'香山區'},
+  // 新竹縣
+  {zip:'302',city:'新竹縣',district:'竹北市'},{zip:'303',city:'新竹縣',district:'湖口鄉'},
+  {zip:'304',city:'新竹縣',district:'新豐鄉'},{zip:'305',city:'新竹縣',district:'新埔鎮'},
+  {zip:'306',city:'新竹縣',district:'關西鎮'},{zip:'307',city:'新竹縣',district:'芎林鄉'},
+  {zip:'308',city:'新竹縣',district:'寶山鄉'},{zip:'310',city:'新竹縣',district:'竹東鎮'},
+  {zip:'311',city:'新竹縣',district:'五峰鄉'},{zip:'312',city:'新竹縣',district:'橫山鄉'},
+  {zip:'313',city:'新竹縣',district:'尖石鄉'},{zip:'314',city:'新竹縣',district:'北埔鄉'},
+  {zip:'315',city:'新竹縣',district:'峨眉鄉'},
+  // 苗栗縣
+  {zip:'350',city:'苗栗縣',district:'竹南鎮'},{zip:'351',city:'苗栗縣',district:'頭份市'},
+  {zip:'352',city:'苗栗縣',district:'三灣鄉'},{zip:'353',city:'苗栗縣',district:'南庄鄉'},
+  {zip:'354',city:'苗栗縣',district:'獅潭鄉'},{zip:'356',city:'苗栗縣',district:'後龍鎮'},
+  {zip:'357',city:'苗栗縣',district:'通霄鎮'},{zip:'358',city:'苗栗縣',district:'苑裡鎮'},
+  {zip:'360',city:'苗栗縣',district:'苗栗市'},{zip:'361',city:'苗栗縣',district:'造橋鄉'},
+  {zip:'362',city:'苗栗縣',district:'頭屋鄉'},{zip:'363',city:'苗栗縣',district:'公館鄉'},
+  {zip:'364',city:'苗栗縣',district:'大湖鄉'},{zip:'365',city:'苗栗縣',district:'泰安鄉'},
+  {zip:'366',city:'苗栗縣',district:'銅鑼鄉'},{zip:'367',city:'苗栗縣',district:'三義鄉'},
+  {zip:'368',city:'苗栗縣',district:'西湖鄉'},{zip:'369',city:'苗栗縣',district:'卓蘭鎮'},
+  // 台中市
+  {zip:'400',city:'台中市',district:'中區'},{zip:'401',city:'台中市',district:'東區'},
+  {zip:'402',city:'台中市',district:'南區'},{zip:'403',city:'台中市',district:'西區'},
+  {zip:'404',city:'台中市',district:'北區'},{zip:'406',city:'台中市',district:'北屯區'},
+  {zip:'407',city:'台中市',district:'西屯區'},{zip:'408',city:'台中市',district:'南屯區'},
+  {zip:'411',city:'台中市',district:'太平區'},{zip:'412',city:'台中市',district:'大里區'},
+  {zip:'413',city:'台中市',district:'霧峰區'},{zip:'414',city:'台中市',district:'烏日區'},
+  {zip:'420',city:'台中市',district:'豐原區'},{zip:'421',city:'台中市',district:'后里區'},
+  {zip:'422',city:'台中市',district:'石岡區'},{zip:'423',city:'台中市',district:'東勢區'},
+  {zip:'424',city:'台中市',district:'和平區'},{zip:'426',city:'台中市',district:'新社區'},
+  {zip:'427',city:'台中市',district:'潭子區'},{zip:'428',city:'台中市',district:'大雅區'},
+  {zip:'429',city:'台中市',district:'神岡區'},{zip:'432',city:'台中市',district:'大肚區'},
+  {zip:'433',city:'台中市',district:'沙鹿區'},{zip:'434',city:'台中市',district:'龍井區'},
+  {zip:'435',city:'台中市',district:'梧棲區'},{zip:'436',city:'台中市',district:'清水區'},
+  {zip:'437',city:'台中市',district:'大甲區'},{zip:'438',city:'台中市',district:'外埔區'},
+  {zip:'439',city:'台中市',district:'大安區'},
+  // 彰化縣
+  {zip:'500',city:'彰化縣',district:'彰化市'},{zip:'502',city:'彰化縣',district:'芬園鄉'},
+  {zip:'503',city:'彰化縣',district:'花壇鄉'},{zip:'504',city:'彰化縣',district:'秀水鄉'},
+  {zip:'505',city:'彰化縣',district:'鹿港鎮'},{zip:'506',city:'彰化縣',district:'福興鄉'},
+  {zip:'507',city:'彰化縣',district:'線西鄉'},{zip:'508',city:'彰化縣',district:'和美鎮'},
+  {zip:'509',city:'彰化縣',district:'伸港鄉'},{zip:'510',city:'彰化縣',district:'員林市'},
+  {zip:'511',city:'彰化縣',district:'社頭鄉'},{zip:'512',city:'彰化縣',district:'永靖鄉'},
+  {zip:'513',city:'彰化縣',district:'埔心鄉'},{zip:'514',city:'彰化縣',district:'溪湖鎮'},
+  {zip:'515',city:'彰化縣',district:'大村鄉'},{zip:'516',city:'彰化縣',district:'埔鹽鄉'},
+  {zip:'520',city:'彰化縣',district:'田中鎮'},{zip:'521',city:'彰化縣',district:'北斗鎮'},
+  {zip:'522',city:'彰化縣',district:'田尾鄉'},{zip:'523',city:'彰化縣',district:'埤頭鄉'},
+  {zip:'524',city:'彰化縣',district:'溪州鄉'},{zip:'525',city:'彰化縣',district:'竹塘鄉'},
+  {zip:'526',city:'彰化縣',district:'二林鎮'},{zip:'527',city:'彰化縣',district:'大城鄉'},
+  {zip:'528',city:'彰化縣',district:'芳苑鄉'},{zip:'530',city:'彰化縣',district:'二水鄉'},
+  // 南投縣
+  {zip:'540',city:'南投縣',district:'南投市'},{zip:'541',city:'南投縣',district:'中寮鄉'},
+  {zip:'542',city:'南投縣',district:'草屯鎮'},{zip:'544',city:'南投縣',district:'國姓鄉'},
+  {zip:'545',city:'南投縣',district:'埔里鎮'},{zip:'546',city:'南投縣',district:'仁愛鄉'},
+  {zip:'551',city:'南投縣',district:'名間鄉'},{zip:'552',city:'南投縣',district:'集集鎮'},
+  {zip:'553',city:'南投縣',district:'水里鄉'},{zip:'555',city:'南投縣',district:'魚池鄉'},
+  {zip:'556',city:'南投縣',district:'信義鄉'},{zip:'557',city:'南投縣',district:'竹山鎮'},
+  {zip:'558',city:'南投縣',district:'鹿谷鄉'},
+  // 雲林縣
+  {zip:'630',city:'雲林縣',district:'斗南鎮'},{zip:'631',city:'雲林縣',district:'大埤鄉'},
+  {zip:'632',city:'雲林縣',district:'虎尾鎮'},{zip:'633',city:'雲林縣',district:'土庫鎮'},
+  {zip:'634',city:'雲林縣',district:'褒忠鄉'},{zip:'635',city:'雲林縣',district:'東勢鄉'},
+  {zip:'636',city:'雲林縣',district:'台西鄉'},{zip:'637',city:'雲林縣',district:'崙背鄉'},
+  {zip:'638',city:'雲林縣',district:'麥寮鄉'},{zip:'640',city:'雲林縣',district:'斗六市'},
+  {zip:'643',city:'雲林縣',district:'林內鄉'},{zip:'646',city:'雲林縣',district:'古坑鄉'},
+  {zip:'647',city:'雲林縣',district:'莿桐鄉'},{zip:'648',city:'雲林縣',district:'西螺鎮'},
+  {zip:'649',city:'雲林縣',district:'二崙鄉'},{zip:'651',city:'雲林縣',district:'北港鎮'},
+  {zip:'652',city:'雲林縣',district:'水林鄉'},{zip:'653',city:'雲林縣',district:'口湖鄉'},
+  {zip:'654',city:'雲林縣',district:'四湖鄉'},{zip:'655',city:'雲林縣',district:'元長鄉'},
+  // 嘉義市
+  {zip:'600',city:'嘉義市',district:'東區'},{zip:'600',city:'嘉義市',district:'西區'},
+  // 嘉義縣
+  {zip:'602',city:'嘉義縣',district:'番路鄉'},{zip:'603',city:'嘉義縣',district:'梅山鄉'},
+  {zip:'604',city:'嘉義縣',district:'竹崎鄉'},{zip:'605',city:'嘉義縣',district:'阿里山鄉'},
+  {zip:'606',city:'嘉義縣',district:'中埔鄉'},{zip:'607',city:'嘉義縣',district:'大埔鄉'},
+  {zip:'608',city:'嘉義縣',district:'水上鄉'},{zip:'611',city:'嘉義縣',district:'鹿草鄉'},
+  {zip:'612',city:'嘉義縣',district:'太保市'},{zip:'613',city:'嘉義縣',district:'朴子市'},
+  {zip:'614',city:'嘉義縣',district:'東石鄉'},{zip:'615',city:'嘉義縣',district:'六腳鄉'},
+  {zip:'616',city:'嘉義縣',district:'新港鄉'},{zip:'621',city:'嘉義縣',district:'民雄鄉'},
+  {zip:'622',city:'嘉義縣',district:'大林鎮'},{zip:'623',city:'嘉義縣',district:'溪口鄉'},
+  {zip:'624',city:'嘉義縣',district:'義竹鄉'},{zip:'625',city:'嘉義縣',district:'布袋鎮'},
+  // 台南市
+  {zip:'700',city:'台南市',district:'中西區'},{zip:'701',city:'台南市',district:'東區'},
+  {zip:'702',city:'台南市',district:'南區'},{zip:'704',city:'台南市',district:'北區'},
+  {zip:'708',city:'台南市',district:'安平區'},{zip:'709',city:'台南市',district:'安南區'},
+  {zip:'710',city:'台南市',district:'永康區'},{zip:'711',city:'台南市',district:'歸仁區'},
+  {zip:'712',city:'台南市',district:'新化區'},{zip:'713',city:'台南市',district:'左鎮區'},
+  {zip:'714',city:'台南市',district:'玉井區'},{zip:'715',city:'台南市',district:'楠西區'},
+  {zip:'716',city:'台南市',district:'南化區'},{zip:'717',city:'台南市',district:'仁德區'},
+  {zip:'718',city:'台南市',district:'關廟區'},{zip:'719',city:'台南市',district:'龍崎區'},
+  {zip:'720',city:'台南市',district:'官田區'},{zip:'721',city:'台南市',district:'麻豆區'},
+  {zip:'722',city:'台南市',district:'佳里區'},{zip:'723',city:'台南市',district:'西港區'},
+  {zip:'724',city:'台南市',district:'七股區'},{zip:'725',city:'台南市',district:'將軍區'},
+  {zip:'726',city:'台南市',district:'學甲區'},{zip:'727',city:'台南市',district:'北門區'},
+  {zip:'730',city:'台南市',district:'新營區'},{zip:'731',city:'台南市',district:'後壁區'},
+  {zip:'732',city:'台南市',district:'白河區'},{zip:'733',city:'台南市',district:'東山區'},
+  {zip:'734',city:'台南市',district:'六甲區'},{zip:'735',city:'台南市',district:'下營區'},
+  {zip:'736',city:'台南市',district:'柳營區'},{zip:'737',city:'台南市',district:'鹽水區'},
+  {zip:'741',city:'台南市',district:'善化區'},{zip:'742',city:'台南市',district:'大內區'},
+  {zip:'743',city:'台南市',district:'山上區'},{zip:'744',city:'台南市',district:'新市區'},
+  {zip:'745',city:'台南市',district:'安定區'},
+  // 高雄市
+  {zip:'800',city:'高雄市',district:'新興區'},{zip:'801',city:'高雄市',district:'前金區'},
+  {zip:'802',city:'高雄市',district:'苓雅區'},{zip:'803',city:'高雄市',district:'鹽埕區'},
+  {zip:'804',city:'高雄市',district:'鼓山區'},{zip:'805',city:'高雄市',district:'旗津區'},
+  {zip:'806',city:'高雄市',district:'前鎮區'},{zip:'807',city:'高雄市',district:'三民區'},
+  {zip:'811',city:'高雄市',district:'楠梓區'},{zip:'812',city:'高雄市',district:'小港區'},
+  {zip:'813',city:'高雄市',district:'左營區'},{zip:'814',city:'高雄市',district:'仁武區'},
+  {zip:'815',city:'高雄市',district:'大社區'},{zip:'820',city:'高雄市',district:'岡山區'},
+  {zip:'821',city:'高雄市',district:'路竹區'},{zip:'822',city:'高雄市',district:'阿蓮區'},
+  {zip:'823',city:'高雄市',district:'田寮區'},{zip:'824',city:'高雄市',district:'燕巢區'},
+  {zip:'825',city:'高雄市',district:'橋頭區'},{zip:'826',city:'高雄市',district:'梓官區'},
+  {zip:'827',city:'高雄市',district:'彌陀區'},{zip:'828',city:'高雄市',district:'永安區'},
+  {zip:'829',city:'高雄市',district:'湖內區'},{zip:'830',city:'高雄市',district:'鳳山區'},
+  {zip:'831',city:'高雄市',district:'大寮區'},{zip:'832',city:'高雄市',district:'林園區'},
+  {zip:'833',city:'高雄市',district:'鳥松區'},{zip:'840',city:'高雄市',district:'三民區'},
+  {zip:'842',city:'高雄市',district:'茂林區'},{zip:'843',city:'高雄市',district:'桃源區'},
+  {zip:'844',city:'高雄市',district:'那瑪夏區'},{zip:'845',city:'高雄市',district:'甲仙區'},
+  {zip:'846',city:'高雄市',district:'杉林區'},{zip:'847',city:'高雄市',district:'內門區'},
+  {zip:'848',city:'高雄市',district:'旗山區'},{zip:'849',city:'高雄市',district:'美濃區'},
+  // 屏東縣
+  {zip:'900',city:'屏東縣',district:'屏東市'},{zip:'901',city:'屏東縣',district:'三地門鄉'},
+  {zip:'902',city:'屏東縣',district:'霧台鄉'},{zip:'903',city:'屏東縣',district:'瑪家鄉'},
+  {zip:'904',city:'屏東縣',district:'九如鄉'},{zip:'905',city:'屏東縣',district:'里港鄉'},
+  {zip:'906',city:'屏東縣',district:'高樹鄉'},{zip:'907',city:'屏東縣',district:'鹽埔鄉'},
+  {zip:'908',city:'屏東縣',district:'長治鄉'},{zip:'909',city:'屏東縣',district:'麟洛鄉'},
+  {zip:'911',city:'屏東縣',district:'竹田鄉'},{zip:'912',city:'屏東縣',district:'內埔鄉'},
+  {zip:'913',city:'屏東縣',district:'萬丹鄉'},{zip:'920',city:'屏東縣',district:'潮州鎮'},
+  {zip:'921',city:'屏東縣',district:'泰武鄉'},{zip:'922',city:'屏東縣',district:'來義鄉'},
+  {zip:'923',city:'屏東縣',district:'萬巒鄉'},{zip:'924',city:'屏東縣',district:'崁頂鄉'},
+  {zip:'925',city:'屏東縣',district:'新埤鄉'},{zip:'926',city:'屏東縣',district:'南州鄉'},
+  {zip:'927',city:'屏東縣',district:'林邊鄉'},{zip:'928',city:'屏東縣',district:'東港鎮'},
+  {zip:'929',city:'屏東縣',district:'琉球鄉'},{zip:'931',city:'屏東縣',district:'佳冬鄉'},
+  {zip:'932',city:'屏東縣',district:'新園鄉'},{zip:'940',city:'屏東縣',district:'枋寮鄉'},
+  {zip:'941',city:'屏東縣',district:'枋山鄉'},{zip:'942',city:'屏東縣',district:'春日鄉'},
+  {zip:'943',city:'屏東縣',district:'獅子鄉'},{zip:'944',city:'屏東縣',district:'車城鄉'},
+  {zip:'945',city:'屏東縣',district:'牡丹鄉'},{zip:'946',city:'屏東縣',district:'恆春鎮'},
+  {zip:'947',city:'屏東縣',district:'滿州鄉'},
+  // 台東縣
+  {zip:'950',city:'台東縣',district:'台東市'},{zip:'951',city:'台東縣',district:'綠島鄉'},
+  {zip:'952',city:'台東縣',district:'蘭嶼鄉'},{zip:'953',city:'台東縣',district:'延平鄉'},
+  {zip:'954',city:'台東縣',district:'卑南鄉'},{zip:'955',city:'台東縣',district:'鹿野鄉'},
+  {zip:'956',city:'台東縣',district:'關山鎮'},{zip:'957',city:'台東縣',district:'海端鄉'},
+  {zip:'958',city:'台東縣',district:'池上鄉'},{zip:'959',city:'台東縣',district:'東河鄉'},
+  {zip:'961',city:'台東縣',district:'成功鎮'},{zip:'962',city:'台東縣',district:'長濱鄉'},
+  {zip:'963',city:'台東縣',district:'太麻里鄉'},{zip:'964',city:'台東縣',district:'金峰鄉'},
+  {zip:'965',city:'台東縣',district:'大武鄉'},{zip:'966',city:'台東縣',district:'達仁鄉'},
+  // 花蓮縣
+  {zip:'970',city:'花蓮縣',district:'花蓮市'},{zip:'971',city:'花蓮縣',district:'新城鄉'},
+  {zip:'972',city:'花蓮縣',district:'秀林鄉'},{zip:'973',city:'花蓮縣',district:'吉安鄉'},
+  {zip:'974',city:'花蓮縣',district:'壽豐鄉'},{zip:'975',city:'花蓮縣',district:'鳳林鎮'},
+  {zip:'976',city:'花蓮縣',district:'光復鄉'},{zip:'977',city:'花蓮縣',district:'豐濱鄉'},
+  {zip:'978',city:'花蓮縣',district:'瑞穗鄉'},{zip:'979',city:'花蓮縣',district:'萬榮鄉'},
+  {zip:'981',city:'花蓮縣',district:'玉里鎮'},{zip:'982',city:'花蓮縣',district:'卓溪鄉'},
+  {zip:'983',city:'花蓮縣',district:'富里鄉'},
+  // 澎湖縣
+  {zip:'880',city:'澎湖縣',district:'馬公市'},{zip:'881',city:'澎湖縣',district:'西嶼鄉'},
+  {zip:'882',city:'澎湖縣',district:'望安鄉'},{zip:'883',city:'澎湖縣',district:'七美鄉'},
+  {zip:'884',city:'澎湖縣',district:'白沙鄉'},{zip:'885',city:'澎湖縣',district:'湖西鄉'},
+  // 金門縣
+  {zip:'890',city:'金門縣',district:'金沙鎮'},{zip:'891',city:'金門縣',district:'金湖鎮'},
+  {zip:'892',city:'金門縣',district:'金寧鄉'},{zip:'893',city:'金門縣',district:'金城鎮'},
+  {zip:'894',city:'金門縣',district:'烈嶼鄉'},{zip:'896',city:'金門縣',district:'烏坵鄉'},
+  // 連江縣（馬祖）
+  {zip:'209',city:'連江縣',district:'南竿鄉'},{zip:'210',city:'連江縣',district:'北竿鄉'},
+  {zip:'211',city:'連江縣',district:'莒光鄉'},{zip:'212',city:'連江縣',district:'東引鄉'},
+];
+
+function onZipInput(val) {
+  const dd = document.getElementById('zip-dropdown');
+  if (!val || val.length < 2) { dd.style.display='none'; return; }
+  const matches = TW_ZIP.filter(z => z.zip.startsWith(val) || z.district.includes(val) || z.city.includes(val));
+  if (!matches.length) { dd.style.display='none'; return; }
+  dd.innerHTML = matches.slice(0,20).map(z =>
+    `<div onclick="selectZip('${z.zip}','${z.city}','${z.district}')"
+      style="padding:8px 12px;cursor:pointer;font-size:13px;border-bottom:0.5px solid var(--line);display:flex;gap:10px;align-items:center"
+      onmouseover="this.style.background='var(--paper2)'"
+      onmouseout="this.style.background=''"
+    ><span style="font-weight:500;color:var(--ink);min-width:40px">${z.zip}</span>
+    <span style="color:var(--ink2)">${z.city} ${z.district}</span></div>`
+  ).join('');
+  dd.style.display = 'block';
+}
+
+function selectZip(zip, city, district) {
+  document.getElementById('f-zip').value = zip;
+  document.getElementById('f-city').value = city;
+  document.getElementById('f-district').value = district;
+  document.getElementById('zip-dropdown').style.display = 'none';
+  document.getElementById('f-addr').focus();
+  onFormChange();
+}
+
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('zip-dropdown');
+  if (dd && !dd.contains(e.target) && e.target.id !== 'f-zip') {
+    dd.style.display = 'none';
+  }
+});
+
 // ─── Init ─────────────────────────────────────────────────────
 async function init() {
   try {
+    // 先測試連線
+    const testRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?limit=1`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+      }
+    });
+
+    if (!testRes.ok) {
+      const errText = await testRes.text();
+      throw new Error(`HTTP ${testRes.status}: ${errText}`);
+    }
+
     const [custs, ords] = await Promise.all([
       q('customers', 'order=created_at.desc'),
       q('orders', 'order=created_at.desc')
@@ -490,10 +767,13 @@ async function init() {
     document.getElementById('loading').style.display = 'none';
   } catch(e) {
     document.getElementById('loading').innerHTML = `
-      <div style="text-align:center;padding:20px">
+      <div style="text-align:center;padding:20px;max-width:400px">
         <div style="font-size:15px;color:var(--red);margin-bottom:8px">連線失敗</div>
-        <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">${e.message}</div>
-        <button class="btn btn-primary" onclick="init()">重試</button>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:8px;word-break:break-all">${e.message}</div>
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:16px">
+          請確認 Supabase 資料表已建立，且 API Key 正確
+        </div>
+        <button class="btn btn-primary" onclick="location.reload()">重新整理</button>
       </div>`;
   }
 }
@@ -738,31 +1018,27 @@ function initNewOrder() {
   renderContract();
 }
 
+
 // ─── 產品資料庫 ───────────────────────────────────────────────
 const PRODUCTS = {
-  'DT2': { label:'DT2 餐桌（長桌）', brand:'F', sizes:['120×80','140×80','160×80','180×80','200×80','220×80','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
-  'DT2R-平腳': { label:'DT2R 圓桌（平腳）', brand:'F', sizes:['Ø80','Ø90','Ø100','Ø110','Ø120','Ø130','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
-  'DT2R-弧腳': { label:'DT2R 圓桌（弧腳）', brand:'F', sizes:['Ø80','Ø90','Ø100','Ø110','Ø120','Ø130','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
-  'DT2B': { label:'DT2B 長凳', brand:'F', sizes:['100×35','120×35','140×35','160×35','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
-  'DT2D': { label:'DT2D 書桌', brand:'F', sizes:['120×60','140×70','160×80','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
-  'LD-置中腳': { label:'LD 升降桌（置中腳）', brand:'F', sizes:['120×60','140×70','160×80','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
-  'LD-後置腳': { label:'LD 升降桌（後置腳）', brand:'F', sizes:['120×60','140×70','160×80','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
-  'TON-311014': { label:'TON 311014（木面/Beech）', brand:'T', sizes:['41×51.5×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:11200 },
-  'TON-315014': { label:'TON 315014（藤面/Beech）', brand:'T', sizes:['41×51.5×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:13200 },
-  'TON-311018': { label:'TON 311018（木面/Beech）', brand:'T', sizes:['41×51.5×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:11400 },
-  'TON-315018': { label:'TON 315018（藤面/Beech）', brand:'T', sizes:['41×51.5×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:13400 },
-  'TON-315020': { label:'TON 315020（藤面/Beech）', brand:'T', sizes:['41×54×84/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:16980 },
-  'TON-321030': { label:'TON 321030（木面扶手/Beech）', brand:'T', sizes:['54.5×57×78/坐46/扶70'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:14800 },
-  'TON-325030': { label:'TON 325030（藤面扶手/Beech）', brand:'T', sizes:['54.5×57×78/坐46/扶70'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:19200 },
-  'TON-325033': { label:'TON 325033（藤面扶手/Beech）', brand:'T', sizes:['54.5×57×78/坐46/扶70'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:22100 },
-  'TON-311035': { label:'TON 311035（木面/Beech）', brand:'T', sizes:['44×47.5×84.5/坐45'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:6200 },
-  'TON-371060': { label:'TON 371060（木面/Beech）', brand:'T', sizes:['44.5×44.5/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:6900 },
-  'TON-375060': { label:'TON 375060（藤面/Beech）', brand:'T', sizes:['44.5×44.5/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:8980 },
-  'TON-315811': { label:'TON 315811（藤面/Beech）', brand:'T', sizes:['45×53.5×80/坐46'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:20550 },
-  'TON-325811': { label:'TON 325811（藤面+扶手/Beech）', brand:'T', sizes:['50×53.5×80/坐46/扶68'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:23600 },
-  'TON-LeafBarStool': { label:'TON Leaf Bar Stool（木面/Oak）', brand:'T', sizes:['41×37×高61','41×37×高76'], woods:['Oak'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:0 },
-  'TON-Merano-Beech': { label:'TON Merano（木面/Beech）', brand:'T', sizes:['標準'], woods:['Beech'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:25000 },
-  'TON-Merano-Oak': { label:'TON Merano（木面/Oak）', brand:'T', sizes:['標準'], woods:['Oak'], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:33400 },
+  'DT2': { label:'DT2 餐桌（長桌）', brand:'F', sizes:['120×80×74','150×80×74','180×80×74','210×90×74','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'DT2R-平腳': { label:'DT2R 圓桌（平腳）', brand:'F', sizes:['Ø80','Ø90','Ø100','Ø110','Ø120','Ø130','Ø140','Ø150','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'DT2R-弧腳': { label:'DT2R 圓桌（弧腳）', brand:'F', sizes:['Ø80','Ø90','Ø100','Ø110','Ø120','Ø130','Ø140','Ø150','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'DT2B': { label:'DT2B 長凳', brand:'F', sizes:['110×40×44（四腳）','110×40×44（六腳）','120×40×44（四腳）','120×40×44（六腳）','130×40×44（四腳）','130×40×44（六腳）','150×40×44（四腳）','150×40×44（六腳）','180×40×44（四腳）','180×40×44（六腳）','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'DT2D': { label:'DT2D 書桌', brand:'F', sizes:['150×60×74','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'LD-置中腳': { label:'LD 升降桌（置中腳）', brand:'F', sizes:['150×60×74','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  'LD-後置腳': { label:'LD 升降桌（後置腳）', brand:'F', sizes:['150×60×74','自訂'], woods:['北美黑胡桃實木','北美白橡實木','緬甸柚木實木'], finishes:['日本大谷漆裝','自訂'], price:0 },
+  // TON：品項選款號，椅面/木種各自獨立欄位，售價動態帶入
+  'TON-No14':         { label:'TON No.14', brand:'T', sizes:['41×51.5×84 / 坐46'], woods:['Beech'], seatOptions:[{label:'木面',price:11200},{label:'藤面',price:13200}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:11200 },
+  'TON-No18':         { label:'TON No.18', brand:'T', sizes:['41×51.5×84 / 坐46'], woods:['Beech'], seatOptions:[{label:'木面',price:11400},{label:'藤面',price:13400}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:11400 },
+  'TON-No20':         { label:'TON No.20', brand:'T', sizes:['41×54×84 / 坐46'],   woods:['Beech'], seatOptions:[{label:'藤面',price:16980}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:16980 },
+  'TON-No30':         { label:'TON No.30', brand:'T', sizes:['54.5×57×78 / 坐46 / 扶70'], woods:['Beech'], seatOptions:[{label:'木面',price:14800},{label:'藤面',price:19200}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:14800 },
+  'TON-No33':         { label:'TON No.33', brand:'T', sizes:['54.5×57×78 / 坐46 / 扶70'], woods:['Beech'], seatOptions:[{label:'藤面+扶手',price:22100}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:22100 },
+  'TON-No35':         { label:'TON No.35', brand:'T', sizes:['44×47.5×84.5 / 坐45'], woods:['Beech'], seatOptions:[{label:'木面',price:6200}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:6200 },
+  'TON-No60':         { label:'TON No.60', brand:'T', sizes:['44.5×44.5 / 坐46'],  woods:['Beech'], seatOptions:[{label:'木面',price:6900},{label:'藤面',price:8980}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:6900 },
+  'TON-No811':        { label:'TON No.811', brand:'T', sizes:['45×53.5×80 / 坐46'], woods:['Beech'], seatOptions:[{label:'藤面',price:20550},{label:'藤面+扶手',price:23600}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:20550 },
+  'TON-LeafBarStool': { label:'TON Leaf Bar Stool', brand:'T', sizes:['41×37×高61','41×37×高76'], woods:['Beech','Oak'], seatOptions:[{label:'木面',price:0}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:0 },
+  'TON-Merano':       { label:'TON Merano', brand:'T', sizes:['標準'], woods:['Beech','Oak'], seatOptions:[{label:'木面 Beech',price:25000},{label:'木面 Oak',price:33400}], finishes:['原色','蜜蠟色','咖啡色','胡桃木色','黑檀木色','素黑色','自選色'], price:25000 },
   'ESA-FORE-原木電鍍': { label:'Esaila FORE Chair（原木/電鍍）', brand:'E', sizes:['標準'], woods:['—'], finishes:['原木/電鍍'], price:14200 },
   'ESA-FORE-原木黑': { label:'Esaila FORE Chair（原木/黑）', brand:'E', sizes:['標準'], woods:['—'], finishes:['原木/黑'], price:14200 },
   'ESA-FORE-灰電鍍': { label:'Esaila FORE Chair（灰/電鍍）', brand:'E', sizes:['標準'], woods:['—'], finishes:['灰/電鍍'], price:14200 },
@@ -813,7 +1089,7 @@ const PRODUCTS = {
 
 const PRODUCT_GROUPS = [
   { label:'── Fretwork 自家 ──', keys:['DT2','DT2R-平腳','DT2R-弧腳','DT2B','DT2D','LD-置中腳','LD-後置腳'] },
-  { label:'── TON ──', keys:['TON-311014','TON-315014','TON-311018','TON-315018','TON-315020','TON-321030','TON-325030','TON-325033','TON-311035','TON-371060','TON-375060','TON-315811','TON-325811','TON-LeafBarStool','TON-Merano-Beech','TON-Merano-Oak'] },
+  { label:'── TON ──', keys:['TON-No14','TON-No18','TON-No20','TON-No30','TON-No33','TON-No35','TON-No60','TON-No811','TON-LeafBarStool','TON-Merano'] },
   { label:'── Esaila ──', keys:['ESA-FORE-原木電鍍','ESA-FORE-原木黑','ESA-FORE-灰電鍍','ESA-FORE-灰黑','ESA-FORE-黑電鍍','ESA-FORE-黑黑','ESA-OGLE-白','ESA-OGLE-黑','ESA-PUSHPIN-Adult-軟木','ESA-PUSHPIN-Adult-黑','ESA-PUSHPIN-Mini-軟木','ESA-PUSHPIN-Mini-黑','ESA-BRAVO-原木','ESA-BRAVO-黑','ESA-BRAVO-灰','ESA-TARS-原木','ESA-TARS-黑','ESA-TARS-灰','ESA-TARS-紅','ESA-TOVA-原木','ESA-TOVA-黑','ESA-SISTER-原木','ESA-SISTER-煙燻','ESA-SISTER-黑','ESA-PEDESTAL-Table-白','ESA-PEDESTAL-Table-黑','ESA-PEDESTAL-Box-米白','ESA-PEDESTAL-Box-黑','ESA-KIPA-淺灰','ESA-KIPA-黑','ESA-EDGE-淺灰','ESA-EDGE-黑','ESA-EDGE-橄欖','ESA-EDGE-鵝黃','ESA-ROVE-淺灰','ESA-ROVE-黑','ESA-ROVE-鵝黃'] },
   { label:'── 天童木工 ──', keys:['TM-T3266','TM-T0635','TM-T3153','TM-M0559','TM-T3036','TM-S5026','TM-M0562','TM-OTHER'] },
   { label:'── 自訂 ──', keys:['CUSTOM'] },
@@ -829,14 +1105,35 @@ function onProductSelect(i) {
   const key = document.getElementById('i'+i+'-key')?.value;
   const p = PRODUCTS[key];
   if (!p) return;
+
+  // 尺寸
   const sizeEl = document.getElementById('i'+i+'-size');
   const sizeInput = document.getElementById('i'+i+'-size-input');
   if (sizeEl) {
     sizeEl.innerHTML = p.sizes.map(s=>`<option value="${s}">${s}</option>`).join('');
     if (sizeInput) sizeInput.style.display = p.sizes.includes('自訂') ? 'block' : 'none';
   }
+
+  // 木種
   const woodEl = document.getElementById('i'+i+'-wood');
   if (woodEl) woodEl.innerHTML = p.woods.map(w=>`<option>${w}</option>`).join('');
+
+  // 椅面選擇（TON專用）
+  const seatRow = document.getElementById('i'+i+'-seat-row');
+  const seatEl = document.getElementById('i'+i+'-seat');
+  if (p.seatOptions && p.seatOptions.length > 0) {
+    if (seatRow) seatRow.style.display = 'flex';
+    if (seatEl) {
+      seatEl.innerHTML = p.seatOptions.map(s=>`<option value="${s.price}">${s.label}（NT$ ${s.price.toLocaleString()}）</option>`).join('');
+      onSeatSelect(i);
+    }
+  } else {
+    if (seatRow) seatRow.style.display = 'none';
+    const priceEl = document.getElementById('i'+i+'-price');
+    if (priceEl && p.price) priceEl.value = p.price;
+  }
+
+  // 塗裝
   const finishEl = document.getElementById('i'+i+'-finish');
   const finishInput = document.getElementById('i'+i+'-finish-input');
   if (finishEl) {
@@ -844,11 +1141,19 @@ function onProductSelect(i) {
     if (finishInput) finishInput.style.display = 'none';
     onFinishSelect(i);
   }
-  const priceEl = document.getElementById('i'+i+'-price');
-  if (priceEl && p.price) priceEl.value = p.price;
+
   const nameEl = document.getElementById('i'+i+'-name');
   if (nameEl) nameEl.value = p.label;
   onItemChange();
+}
+
+function onSeatSelect(i) {
+  const seatEl = document.getElementById('i'+i+'-seat');
+  const priceEl = document.getElementById('i'+i+'-price');
+  if (seatEl && priceEl) {
+    priceEl.value = seatEl.value;
+    calcSummary();
+  }
 }
 
 function onSizeSelect(i) {
@@ -863,7 +1168,7 @@ function onFinishSelect(i) {
   const finishEl = document.getElementById('i'+i+'-finish');
   const finishInput = document.getElementById('i'+i+'-finish-input');
   if (!finishEl || !finishInput) return;
-  finishInput.style.display = (finishEl.value === '自訂' || finishEl.value === '請洽確認') ? 'block' : 'none';
+  finishInput.style.display = (finishEl.value === '自訂' || finishEl.value === '自選色' || finishEl.value === '請洽確認') ? 'block' : 'none';
   onItemChange();
 }
 
@@ -885,14 +1190,18 @@ function addItem() {
       <select id="i${i}-size" onchange="onSizeSelect(${i})"><option>—</option></select>
       <input id="i${i}-size-input" placeholder="自訂尺寸..." style="display:none;margin-top:4px;font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper);color:var(--ink)" oninput="onItemChange()">
     </div>
+    <div class="field" id="i${i}-seat-row" style="display:none">
+      <label>椅面</label>
+      <select id="i${i}-seat" onchange="onSeatSelect(${i})"><option>—</option></select>
+    </div>
     <div class="field">
-      <label>木種／顏色</label>
+      <label>木種</label>
       <select id="i${i}-wood" onchange="onItemChange()"><option>—</option></select>
     </div>
     <div class="field">
       <label>塗裝／備註</label>
       <select id="i${i}-finish" onchange="onFinishSelect(${i})"><option>—</option></select>
-      <input id="i${i}-finish-input" placeholder="備註..." style="display:none;margin-top:4px;font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper);color:var(--ink)" oninput="onItemChange()">
+      <input id="i${i}-finish-input" placeholder="輸入顏色名稱或備註..." style="display:none;margin-top:4px;font-family:inherit;font-size:13px;padding:7px 10px;border:0.5px solid var(--line2);border-radius:var(--radius);background:var(--paper);color:var(--ink)" oninput="onItemChange()">
     </div>
     <div class="field"><label>單價</label><input id="i${i}-price" type="number" placeholder="0" oninput="calcSummary()"></div>
     <div class="field"><label>數量</label><input id="i${i}-qty" type="number" value="1" min="1" oninput="calcSummary()"></div>
@@ -993,7 +1302,11 @@ function calcSummary() {
 function renderContract() {
   const name = document.getElementById('f-name')?.value||'　　　　';
   const phone = document.getElementById('f-phone')?.value||'　　　　';
-  const addr = document.getElementById('f-addr')?.value||'　　　　';
+  const zip = document.getElementById('f-zip')?.value||'';
+  const city = document.getElementById('f-city')?.value||'';
+  const district = document.getElementById('f-district')?.value||'';
+  const addrDetail = document.getElementById('f-addr')?.value||'';
+  const addr = [zip, city+district, addrDetail].filter(Boolean).join(' ') || '　　　　';
   const signDate = document.getElementById('f-sign-date')?.value||'';
   const delivery = document.getElementById('f-delivery')?.value||'';
   const rate = parseFloat(document.getElementById('f-deposit-rate')?.value)||0.5;
@@ -1064,9 +1377,9 @@ function renderContract() {
     <p>玉山銀行（銀行代碼 808）<br>帳號：1300-940-033-256<br>戶名：黑式設計有限公司<br><br>匯款後請備註客戶姓名或訂單編號，以利核對。</p>
     <p style="margin-top:20px">以上內容確認無誤後請簽名回傳</p>
     <div class="sig-area">
-      <div class="sig-block"><div>客戶簽名：</div><div style="height:48px"></div></div>
+      <div class="sig-block has-line"><div>客戶簽名：</div><div style="height:48px"></div></div>
       <div class="sig-block"><div>黑式設計有限公司${isTonOnly?' 代表人':''} 簽名：</div>
-        <div style="height:48px;display:flex;align-items:flex-end"><span style="font-family:'Noto Serif TC',serif;font-size:18px;color:var(--ink2)">菜哲均</span></div>
+        <div style="display:flex;align-items:flex-end"><img src="data:image/png;base64,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" style="height:52px;max-width:180px;object-fit:contain;display:block"></div>
       </div>
     </div>`;
 
@@ -1112,7 +1425,7 @@ async function saveOrder() {
       const [newCust] = await insert('customers', {
         id: custId,
         name, phone: document.getElementById('f-phone')?.value||'',
-        address: document.getElementById('f-addr')?.value||'',
+        address: [document.getElementById('f-zip')?.value||'', document.getElementById('f-city')?.value||'', document.getElementById('f-district')?.value||'', document.getElementById('f-addr')?.value||''].filter(Boolean).join(' '),
         source: document.getElementById('f-source')?.value||'ig',
         note: document.getElementById('f-note')?.value||'',
         status: 'confirmed'
