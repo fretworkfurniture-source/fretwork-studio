@@ -2,6 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>FRETWORK FURNITURE — 管理系統</title>
 
@@ -123,16 +124,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 .contract-box{border:0.5px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;margin-top:14px}
 .contract-toolbar{background:var(--paper2);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid var(--line)}
 .contract-toolbar span{font-size:12px;color:var(--ink2);font-weight:500}
-.contract-body{padding:28px 32px;max-height:480px;overflow-y:auto;font-size:12px;line-height:1.85;color:var(--ink);background:var(--paper)}
+.contract-body{padding:28px 32px;max-height:480px;overflow-y:auto;font-size:12px;line-height:2.2;color:var(--ink);background:var(--paper)}
 .contract-body h1{font-family:'Georgia','PingFang TC',serif;font-size:16px;font-weight:500;text-align:center;letter-spacing:0.12em;margin-bottom:4px}
 .contract-body h2{font-size:12px;text-align:center;color:var(--ink2);letter-spacing:0.1em;margin-bottom:20px;font-weight:400}
-.contract-body h3{font-size:12px;font-weight:500;margin:14px 0 6px;border-left:2px solid var(--ink);padding-left:8px}
+.contract-body h3{font-size:16px;font-weight:500;margin:14px 0 6px}
 .contract-body table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
-.contract-body th{background:var(--paper2);padding:5px 8px;border:0.5px solid var(--line2);font-weight:500;color:var(--ink2);font-size:10px}
-.contract-body td{padding:5px 8px;border:0.5px solid var(--line2)}
-.contract-body .info-grid{display:grid;grid-template-columns:80px 1fr;gap:2px 8px;margin:8px 0;font-size:12px}
+.contract-body th{background:var(--paper2);padding:5px 8px;border:0.5px solid var(--line2);font-weight:500;color:var(--ink2);font-size:14px;text-align:center;white-space:nowrap}
+.contract-body td{padding:5px 8px;border:0.5px solid var(--line2);text-align:center;white-space:nowrap}
+.contract-body .info-grid{display:grid;grid-template-columns:80px 1fr;gap:2px 0.5em;margin:8px 0;font-size:12px}
 .contract-body .info-label{color:var(--ink3)}
 .contract-body .sig-area{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px}
+.contract-body .sig-section{page-break-inside:avoid;break-inside:avoid}
 .contract-body .sig-block{padding-top:8px;font-size:11px;color:var(--ink2)}.contract-body .sig-block.has-line{border-top:0.5px solid var(--ink)}
 
 .divider{border:none;border-top:0.5px solid var(--line);margin:16px 0}
@@ -211,6 +213,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
   .page{display:block!important}
 }
 </style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -237,6 +240,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
       <div class="nav-item" onclick="gotoPage('production',this)"><span class="nav-icon">⊙</span><span>生產看板</span></div>
       <div class="nav-section">財務</div>
       <div class="nav-item" onclick="gotoPage('payments',this)"><span class="nav-icon">◇</span><span>收款管理</span><span class="nav-badge" id="nb-pay">—</span></div>
+      <div class="nav-section">系統</div>
+      <div class="nav-item" onclick="gotoPage('trash',this)"><span class="nav-icon">⊘</span><span>暫存區</span><span class="nav-badge" id="nb-trash"></span></div>
     </nav>
     <div class="sync-indicator">
       <div class="sync-dot" id="sync-dot"></div>
@@ -276,7 +281,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
       <div id="page-customers" class="page">
         <div class="section-header">
           <div class="section-title-text">客戶管理</div>
-          <button class="btn btn-primary" onclick="gotoPage('new-order',null)">＋ 新增客戶</button>
+          <button class="btn btn-primary" onclick="openInquiryModal()">＋ 新增詢問</button>
         </div>
         <div class="tab-bar">
           <button class="tab active" onclick="filterCustomers('all',this)">全部</button>
@@ -400,6 +405,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
         <div class="pipeline-wrap" id="production-pipeline"></div>
       </div>
 
+      <!-- Trash -->
+      <div id="page-trash" class="page">
+        <div class="section-header">
+          <div class="section-title-text">暫存區</div>
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">已刪除的項目將在七天後永久清除，期間可復原。</div>
+        <div id="trash-list"></div>
+      </div>
+
       <!-- Payments -->
       <div id="page-payments" class="page">
         <div class="section-header"><div class="section-title-text">收款管理</div></div>
@@ -414,6 +428,184 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
   </div>
 </div>
 
+<!-- Quick Add Inquiry Modal -->
+<div id="inquiry-modal" style="display:none" class="modal-overlay" onclick="closeInquiryModal(event)">
+  <div class="modal" style="max-width:480px;width:95%">
+    <div class="modal-title">快速建檔 — 詢問客戶</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>來源平台</label>
+        <select id="iq-source">
+          <option value="ig">Instagram</option>
+          <option value="fb">Facebook</option>
+          <option value="line">Line</option>
+          <option value="thread">Threads</option>
+          <option value="phone">電話 / 現場</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>對方 ID / 暱稱</label>
+        <input id="iq-name" placeholder="@username 或暱稱">
+      </div>
+      <div class="field form-full">
+        <label>詢問內容</label>
+        <input id="iq-note" placeholder="例：詢問110圓桌黑胡桃、想看展示品...">
+      </div>
+      <div class="field">
+        <label>預約到店日期</label>
+        <input id="iq-date" type="date">
+      </div>
+      <div class="field">
+        <label>預約時間</label>
+        <select id="iq-time">
+          <option value="">不指定</option>
+          <option value="10:00">10:00</option>
+          <option value="11:00">11:00</option>
+          <option value="12:00">12:00</option>
+          <option value="13:00">13:00</option>
+          <option value="14:00">14:00</option>
+          <option value="15:00">15:00</option>
+          <option value="16:00">16:00</option>
+          <option value="17:00">17:00</option>
+          <option value="18:00">18:00</option>
+        </select>
+      </div>
+    </div>
+    <div id="gcal-status" style="font-size:11px;color:var(--ink3);margin-top:10px;min-height:16px"></div>
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+      <button class="btn btn-sm" onclick="document.getElementById('inquiry-modal').style.display='none'">取消</button>
+      <button class="btn btn-sm btn-primary" onclick="saveInquiry()">✓ 建立並加入行事曆</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Detail Modal -->
+<div id="customer-modal" style="display:none" class="modal-overlay" onclick="closeCustomerModal(event)">
+  <div class="modal" style="max-width:560px;width:95%;padding:0;overflow:hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:0.5px solid var(--line);background:var(--paper2)">
+      <div style="font-size:14px;font-weight:500;color:var(--ink)" id="cust-modal-name">客戶詳情</div>
+      <button class="btn btn-sm" onclick="document.getElementById('customer-modal').style.display='none'">關閉</button>
+    </div>
+    <div style="padding:20px;overflow-y:auto;max-height:80vh;display:flex;flex-direction:column;gap:16px">
+
+      <!-- 基本資料 -->
+      <div class="card" style="margin:0">
+        <div class="card-title">基本資料</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field"><label>來源平台</label>
+            <select id="cm-source" onchange="updateCustomerField('source',this.value)">
+              <option value="ig">Instagram</option>
+              <option value="fb">Facebook</option>
+              <option value="line">Line</option>
+              <option value="thread">Threads</option>
+              <option value="phone">電話 / 現場</option>
+            </select>
+          </div>
+          <div class="field"><label>跟進狀態</label>
+            <select id="cm-status" onchange="updateCustomerField('status',this.value)">
+              <option value="inquiry">詢問中</option>
+              <option value="confirmed">已下訂</option>
+              <option value="producing">生產中</option>
+              <option value="shipped">已出貨</option>
+              <option value="done">已完成</option>
+            </select>
+          </div>
+          <div class="field"><label>姓名 / ID</label>
+            <input id="cm-name" onblur="updateCustomerField('name',this.value)">
+          </div>
+          <div class="field"><label>聯絡電話</label>
+            <input id="cm-phone" onblur="updateCustomerField('phone',this.value)">
+          </div>
+          <div class="field" style="grid-column:1/-1"><label>地址</label>
+            <input id="cm-address" onblur="updateCustomerField('address',this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- 詢問與備註 -->
+      <div class="card" style="margin:0">
+        <div class="card-title">詢問內容與備註</div>
+        <div class="field"><label>預約到店日期</label>
+          <input id="cm-appt" type="date" onblur="updateCustomerField('appointment_date',this.value)">
+        </div>
+        <div class="field" style="margin-top:10px"><label>備註</label>
+          <textarea id="cm-note" onblur="updateCustomerField('note',this.value)" style="min-height:80px"></textarea>
+        </div>
+      </div>
+
+      <!-- 歷史訂單 -->
+      <div class="card" style="margin:0">
+        <div class="card-title">歷史訂單</div>
+        <div id="cm-orders"></div>
+      </div>
+
+      <!-- 操作按鈕 -->
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-sm" style="color:var(--red)" onclick="confirmDeleteFromModal()">刪除客戶</button>
+        <button class="btn btn-sm btn-primary" onclick="startOrderFromModal()">建立訂單</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div id="delete-modal" style="display:none" class="modal-overlay" onclick="closeDeleteModal(event)">
+  <div class="modal" style="max-width:380px;width:95%">
+    <div class="modal-title" style="color:var(--red)">確認刪除</div>
+    <div id="delete-modal-msg" style="font-size:13px;color:var(--ink2);margin-bottom:16px;line-height:1.6"></div>
+    <div style="background:var(--amber-bg);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--amber);margin-bottom:16px">
+      刪除後將移至暫存區，七天內可復原，之後將永久刪除。
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-sm" onclick="document.getElementById('delete-modal').style.display='none'">取消</button>
+      <button class="btn btn-sm" id="delete-confirm-btn" style="background:var(--red);color:white;border-color:var(--red)">確認刪除</button>
+    </div>
+  </div>
+</div>
+
+<!-- Inquiry Modal（詢問中客人快速建檔）-->
+<div id="inquiry-modal" style="display:none" class="modal-overlay" onclick="closeInquiryModal(event)">
+  <div class="modal" style="max-width:460px;width:95%">
+    <div class="modal-title">新增詢問客戶</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="field">
+        <label>來源平台</label>
+        <select id="iq-source">
+          <option value="ig">Instagram</option>
+          <option value="fb">Facebook</option>
+          <option value="line">Line</option>
+          <option value="thread">Threads</option>
+          <option value="phone">電話 / 現場</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>對方 ID / 暱稱</label>
+        <input id="iq-name" placeholder="@username 或暱稱">
+      </div>
+      <div class="field">
+        <label>詢問內容</label>
+        <textarea id="iq-note" placeholder="詢問什麼產品、有什麼特殊需求..."></textarea>
+      </div>
+      <div class="field">
+        <label>預約到店日期</label>
+        <input id="iq-date" type="date">
+      </div>
+      <div class="field">
+        <label>預約時間</label>
+        <input id="iq-time" type="time" value="14:00">
+      </div>
+      <div style="background:var(--blue-bg);border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--blue)">
+        儲存後會自動新增到 Google 行事曆
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-sm" onclick="document.getElementById('inquiry-modal').style.display='none'">取消</button>
+      <button class="btn btn-sm btn-primary" onclick="saveInquiry()">儲存並加入行事曆</button>
+    </div>
+  </div>
+</div>
+
 <!-- Contract Modal -->
 <div id="contract-modal" style="display:none" class="modal-overlay" onclick="closeContractModal(event)">
   <div class="modal" style="max-width:680px;width:95%;padding:0;overflow:hidden">
@@ -424,7 +616,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
         <button class="btn btn-sm" onclick="document.getElementById('contract-modal').style.display='none'">關閉</button>
       </div>
     </div>
-    <div id="contract-modal-body" class="contract-body" style="max-height:80vh;overflow-y:auto;padding:32px 40px"></div>
+    <div id="contract-modal-body" class="contract-body" style="max-height:75vh;overflow-y:auto;padding:32px 40px;padding-bottom:60px"></div>
   </div>
 </div>
 
@@ -442,6 +634,69 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang TC','Helvetica Neue'
 <script>
 // ─── Supabase Config ──────────────────────────────────────────
 const SUPABASE_URL = 'https://bwtcjafpordpzcwctvib.supabase.co';
+
+// ─── Google Calendar 設定 ────────────────────────────────────
+const GCAL_CLIENT_ID = '917868859981-q299ctn9hanh0ia0pkoenjk9gfb83ud5.apps.googleusercontent.com';
+const GCAL_SCOPES = 'https://www.googleapis.com/auth/calendar.events';
+let gcalToken = null;
+
+function initGoogleAuth() {
+  return new Promise((resolve) => {
+    if (gcalToken) { resolve(true); return; }
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: GCAL_CLIENT_ID,
+      scope: GCAL_SCOPES,
+      callback: (response) => {
+        if (response.access_token) {
+          gcalToken = response.access_token;
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }
+    });
+    client.requestAccessToken();
+  });
+}
+
+async function addToGoogleCalendar(title, date, time, note) {
+  try {
+    const ok = await initGoogleAuth();
+    if (!ok) { showToast('Google 授權失敗', true); return false; }
+
+    const startDT = `${date}T${time}:00+08:00`;
+    const endDT   = `${date}T${String(parseInt(time.split(':')[0])+1).padStart(2,'0')}:${time.split(':')[1]}:00+08:00`;
+
+    const res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + gcalToken,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        summary: title,
+        description: note || '',
+        start: { dateTime: startDT, timeZone: 'Asia/Taipei' },
+        end:   { dateTime: endDT,   timeZone: 'Asia/Taipei' }
+      })
+    });
+
+    if (res.ok) {
+      showToast('已加入 Google 行事曆！');
+      return true;
+    } else {
+      const err = await res.json();
+      showToast('行事曆新增失敗：' + (err.error?.message||'未知錯誤'), true);
+      return false;
+    }
+  } catch(e) {
+    showToast('行事曆連線失敗', true);
+    return false;
+  }
+}
+const GOOGLE_CLIENT_ID = '917868859981-q299ctn9hanh0ia0pkoenjk9gfb83ud5.apps.googleusercontent.com';
+const GCAL_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
+let googleToken = null;
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGNqYWZwb3JkcHpjd2N0dmliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTcyODgsImV4cCI6MjA5MDQzMzI4OH0.wMdhKweODPR_H703KQITgNKMxL3nXfE5_vbh5P3sLMA';
 
 async function sb(table, method='GET', body=null, query='') {
@@ -507,6 +762,120 @@ const STATUS_FLOW  = ['confirmed','producing','ready','shipped','done'];
 
 let cache = { customers: [], orders: [] };
 
+
+
+// ─── Google Calendar 連動 ─────────────────────────────────────
+function openInquiryModal() {
+  document.getElementById('iq-name').value = '';
+  document.getElementById('iq-note').value = '';
+  document.getElementById('iq-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('iq-time').value = '';
+  document.getElementById('iq-source').value = 'ig';
+  document.getElementById('gcal-status').textContent = '';
+  document.getElementById('inquiry-modal').style.display = 'flex';
+}
+
+function closeInquiryModal(e) {
+  if (e.target === document.getElementById('inquiry-modal')) {
+    document.getElementById('inquiry-modal').style.display = 'none';
+  }
+}
+
+async function saveInquiry() {
+  const name = document.getElementById('iq-name').value.trim();
+  if (!name) { showToast('請填寫對方 ID 或暱稱', true); return; }
+
+  const source = document.getElementById('iq-source').value;
+  const note = document.getElementById('iq-note').value;
+  const date = document.getElementById('iq-date').value;
+  const time = document.getElementById('iq-time').value;
+  const custId = 'C' + String(Date.now()).slice(-6);
+
+  try {
+    // 儲存到Supabase
+    await insert('customers', {
+      id: custId, name, phone: '', address: '',
+      source, note, status: 'inquiry'
+    });
+    await refreshData();
+    showToast(`${name} 建檔成功！`);
+
+    // Google Calendar連動
+    if (date) {
+      document.getElementById('gcal-status').textContent = '正在加入 Google 行事曆...';
+      try {
+        await addToGoogleCalendar(name, date, time, note, source);
+        document.getElementById('gcal-status').textContent = '✓ 已加入 Google 行事曆';
+      } catch(e) {
+        document.getElementById('gcal-status').textContent = '行事曆加入失敗：' + e.message;
+      }
+    }
+
+    setTimeout(() => {
+      document.getElementById('inquiry-modal').style.display = 'none';
+      renderCustomers('all');
+    }, 1500);
+
+  } catch(e) {
+    showToast('建檔失敗：' + e.message, true);
+  }
+}
+
+async function addToGoogleCalendar(name, date, time, note, source) {
+  // 取得 Google Token
+  if (!googleToken) {
+    googleToken = await getGoogleToken();
+  }
+
+  const sourceLabel = {ig:'Instagram',fb:'Facebook',line:'Line',thread:'Threads',phone:'電話/現場'}[source]||source;
+  const startTime = time ? `${date}T${time}:00` : `${date}T10:00:00`;
+  const endTime   = time ? `${date}T${time.split(':')[0]}:${(parseInt(time.split(':')[1])+30).toString().padStart(2,'0')}:00` : `${date}T11:00:00`;
+
+  const event = {
+    summary: `Fretwork 看展 — ${name}（${sourceLabel}）`,
+    description: note ? `詢問內容：${note}` : '到店看展示品',
+    start: time
+      ? { dateTime: startTime, timeZone: 'Asia/Taipei' }
+      : { date },
+    end: time
+      ? { dateTime: endTime, timeZone: 'Asia/Taipei' }
+      : { date },
+    reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 60 }] }
+  };
+
+  const res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + googleToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(event)
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    if (res.status === 401) {
+      googleToken = null;
+      throw new Error('請重新授權 Google 行事曆');
+    }
+    throw new Error(err.error?.message || '新增失敗');
+  }
+  return await res.json();
+}
+
+function getGoogleToken() {
+  return new Promise((resolve, reject) => {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: GCAL_SCOPE,
+      callback: (response) => {
+        if (response.error) reject(new Error(response.error));
+        else resolve(response.access_token);
+      }
+    });
+    client.requestAccessToken();
+  });
+}
 
 // ─── 台灣郵遞區號資料庫 ──────────────────────────────────────
 const TW_ZIP = [
@@ -780,19 +1149,20 @@ function printContract() {
     <meta charset="UTF-8">
     <title>Fretwork 合約</title>
     <style>
-      body{font-family:-apple-system,'PingFang TC','Helvetica Neue',sans-serif;font-size:12px;line-height:1.85;color:#1a1a18;padding:40px;max-width:800px;margin:0 auto}
+      body{font-family:-apple-system,'PingFang TC','Helvetica Neue',sans-serif;font-size:12px;line-height:2.2;color:#1a1a18;padding:40px;max-width:800px;margin:0 auto}
       h1{font-size:16px;font-weight:500;text-align:center;letter-spacing:0.12em;margin-bottom:4px}
       h2{font-size:12px;text-align:center;color:#4a4a46;letter-spacing:0.1em;margin-bottom:20px;font-weight:400}
-      h3{font-size:12px;font-weight:500;margin:14px 0 6px;border-left:2px solid #1a1a18;padding-left:8px}
+      h3{font-size:16px;font-weight:500;margin:14px 0 6px}
       table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
-      th{background:#f2f1ec;padding:5px 8px;border:0.5px solid #c8c6ba;font-weight:500;color:#4a4a46;font-size:10px}
-      td{padding:5px 8px;border:0.5px solid #c8c6ba}
-      .info-grid{display:grid;grid-template-columns:80px 1fr;gap:2px 8px;margin:8px 0;font-size:12px}
+      th{background:#f2f1ec;padding:5px 8px;border:0.5px solid #c8c6ba;font-weight:500;color:#4a4a46;font-size:14px;text-align:center;white-space:nowrap}
+      td{padding:5px 8px;border:0.5px solid #c8c6ba;text-align:center;white-space:nowrap}
+      .info-grid{display:grid;grid-template-columns:80px 1fr;gap:2px 0.5em;margin:8px 0;font-size:12px}
       .info-label{color:#8a8a84}
-      .sig-area{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px}
+      .sig-area{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px;page-break-inside:avoid;break-inside:avoid}
       .sig-block{padding-top:8px;font-size:11px;color:#4a4a46}
       .sig-block.has-line{border-top:0.5px solid #1a1a18}
-      @media print{body{padding:20px}}
+      .sig-section{page-break-inside:avoid;break-inside:avoid}
+      @media print{body{padding:20px}.sig-area{page-break-inside:avoid;break-inside:avoid}}
     </style>
   </head><body>${body}</body></html>`);
   win.document.close();
@@ -800,7 +1170,8 @@ function printContract() {
 }
 
 function buildContractHtml(o) {
-  const items = o.items || [];
+  let items = o.items || [];
+  if (typeof items === 'string') { try { items = JSON.parse(items); } catch(e) { items = []; } }
   const {hasLift, hasTon, hasEsaila, hasCustom} = detectTypes(items);
   const isTonOnly = hasTon && !hasCustom && !hasLift;
   const rate = o.rate || 0.5;
@@ -821,13 +1192,15 @@ function buildContractHtml(o) {
     ? `本契約訂單總金額為新台幣 ${total.toLocaleString()} 元整，本公司於收到價金後進行出貨事宜。`
     : `本契約訂單總金額為新台幣 ${total.toLocaleString()} 元整。<br>客戶應於簽立本契約後三日內給付訂金 <strong>${dep.toLocaleString()}</strong> 元（即總價款之${rate===0.5?'五成':'三成'}）。尾款 <strong>${bal.toLocaleString()}</strong> 元於本公司完成到貨安裝後三日內給付（以現場完成照片為確認依據）。於價款全數付清前，家具所有權仍屬本公司所有。`;
 
-  let warrantyHtml = `<h3>九、保固與維護</h3>
-    <p>本公司自交付日起提供木質承重結構五年保固，所稱木質承重結構，係指家具之承重結構與榫接結構部分，於正常使用情況下，如發生結構鬆動或製作瑕疵，本公司將提供檢視與維修服務。<br>木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
-  if (hasCustom || hasLift) warrantyHtml += `<p>本公司自製之木質家具及其木質表面，採用日本大谷塗料進行塗裝處理，符合 F☆☆☆☆（F四星）認證標準，具備防水、耐熱100℃、耐酒精特性，屬食品級塗料，無甲醛添加。<br>表面塗裝屬耗材性質，提供<strong>一年保固</strong>。</p>`;
-  if (hasLift) warrantyHtml += `<p><strong>【升降桌】</strong>電動升降桌馬達系統，自交付日起提供<strong>五年保固</strong>。</p>`;
-  if (hasTon) warrantyHtml += `<p><strong>【TON 椅具】</strong>自交付日起提供五年結構保固。</p>`;
+  const hasFretwork = items.some(it => !(it.name||'').toUpperCase().includes('TON') && !(it.name||'').toUpperCase().includes('ESAILA') && !(it.name||'').includes('天童木工'));
+  let warrantyHtml = `<h3>${isTonOnly?'五':'九'}、保固與維護</h3>`;
+  if(hasFretwork) warrantyHtml+=`<p>本公司自交付日起提供木質承重結構五年保固，所稱木質承重結構，係指家具之承重結構與榫接結構部分，於正常使用情況下，如發生結構鬆動或製作瑕疵，本公司將提供檢視與維修服務。<br>木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
+  if(hasFretwork||hasLift) warrantyHtml+=`<p>本公司自製之木質家具及其木質表面，採用日本大谷塗料進行塗裝處理，符合 F☆☆☆☆（F四星）認證標準，具備防水、耐熱100℃、耐酒精特性，屬食品級塗料，無甲醛添加。<br>表面塗裝屬耗材性質，提供<strong>一年保固</strong>。若因使用強酸、強鹼、表面溫度大於100度所致之損壞，不在保固範圍內。</p>`;
+  if (hasLift) warrantyHtml += `<p><strong>【升降桌】</strong>電動升降桌馬達系統，自交付日起提供<strong>五年保固</strong>。保固範圍限於正常使用情況下之機械或電動故障。因不當使用、外力撞擊、液體滲入、自行拆裝或改裝所致之損壞，不在保固範圍內。</p>`;
+  if (hasTon) warrantyHtml += `<p>自交付日起提供五年結構保固。木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
 
-  const wNum = isTonOnly ? '五' : '十';
+
+  const wNum = isTonOnly ? '六' : '十';
 
   let html = `
     <h1>FRETWORK FURNITURE</h1><h2>訂製家具契約書</h2>
@@ -856,7 +1229,7 @@ function buildContractHtml(o) {
   html += warrantyHtml + `
     <h3>${wNum}、付款資訊</h3>
     <p>玉山銀行（銀行代碼 808）<br>帳號：1300-940-033-256<br>戶名：黑式設計有限公司<br><br>匯款後請備註客戶姓名或訂單編號，以利核對。</p>
-    <p style="margin-top:20px">以上內容確認無誤後請簽名回傳</p>
+    <div class="sig-section"><p style="margin-top:20px">以上內容確認無誤後請簽名回傳</p>
     <div class="sig-area">
       <div class="sig-block has-line"><div>客戶簽名：</div><div style="height:48px"></div></div>
       <div class="sig-block"><div>黑式設計有限公司${isTonOnly?' 代表人':''} 簽名：</div>
@@ -864,9 +1237,267 @@ function buildContractHtml(o) {
           <img src="${SIG_B64}" style="height:48px;max-width:160px;object-fit:contain;display:block;mix-blend-mode:multiply;border:none">
         </div>
       </div>
-    </div>`;
+    </div></div>`;
 
   return html;
+}
+
+
+// ─── 詢問建檔 ────────────────────────────────────────────────
+function openInquiryModal() {
+  document.getElementById('iq-name').value = '';
+  document.getElementById('iq-note').value = '';
+  document.getElementById('iq-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('iq-time').value = '14:00';
+  document.getElementById('iq-source').value = 'ig';
+  document.getElementById('inquiry-modal').style.display = 'flex';
+}
+
+function closeInquiryModal(e) {
+  if (e.target === document.getElementById('inquiry-modal')) {
+    document.getElementById('inquiry-modal').style.display = 'none';
+  }
+}
+
+async function saveInquiry() {
+  const name = document.getElementById('iq-name').value.trim();
+  if (!name) { showToast('請填寫對方 ID 或暱稱', true); return; }
+
+  const source = document.getElementById('iq-source').value;
+  const note   = document.getElementById('iq-note').value;
+  const date   = document.getElementById('iq-date').value;
+  const time   = document.getElementById('iq-time').value;
+
+  try {
+    // 儲存到Supabase
+    const custId = 'C' + Date.now();
+    await insert('customers', {
+      id: custId,
+      name,
+      phone: '',
+      address: '',
+      source,
+      note,
+      status: 'inquiry'
+    });
+
+    await refreshData();
+    updateBadges();
+    document.getElementById('inquiry-modal').style.display = 'none';
+    showToast('客戶建檔成功！');
+
+    // 加入Google行事曆
+    if (date && time) {
+      const sourceLabel = {ig:'Instagram',fb:'Facebook',line:'Line',thread:'Threads',phone:'電話/現場'}[source]||source;
+      const title = `【Fretwork】${name}（${sourceLabel}）到店看展示品`;
+      await addToGoogleCalendar(title, date, time, note ? `詢問內容：${note}` : '');
+    }
+
+    renderCustomers('all');
+  } catch(e) {
+    showToast('建檔失敗：' + e.message, true);
+  }
+}
+
+
+// ─── 刪除功能（軟刪除 + 暫存區）────────────────────────────
+function closeDeleteModal(e) {
+  if (e.target === document.getElementById('delete-modal')) {
+    document.getElementById('delete-modal').style.display = 'none';
+  }
+}
+
+function confirmDelete(type, id, label) {
+  const msg = type === 'order'
+    ? `確定要刪除訂單 <strong>${id}</strong>（${label}）嗎？`
+    : `確定要刪除客戶 <strong>${label}</strong> 嗎？`;
+  document.getElementById('delete-modal-msg').innerHTML = msg;
+  document.getElementById('delete-modal').style.display = 'flex';
+  document.getElementById('delete-confirm-btn').onclick = () => {
+    document.getElementById('delete-modal').style.display = 'none';
+    if (type === 'order') softDeleteOrder(id);
+    else softDeleteCustomer(id);
+  };
+}
+
+async function softDeleteOrder(oid) {
+  try {
+    const o = cache.orders.find(o => o.order_id === oid);
+    await update('orders', 'order_id', oid, { deleted_at: new Date().toISOString() });
+    await refreshData();
+
+    // 重新計算客戶狀態
+    if (o?.customer_id) {
+      const remaining = cache.orders.filter(r => r.customer_id === o.customer_id && !r.deleted_at);
+      const newStatus = remaining.length === 0 ? 'inquiry' :
+        remaining.some(r => ['producing','ready'].includes(r.status)) ? 'producing' :
+        remaining.some(r => r.status === 'confirmed') ? 'confirmed' :
+        remaining.some(r => r.status === 'shipped') ? 'shipped' : 'inquiry';
+      await update('customers', 'id', o.customer_id, { status: newStatus });
+      await refreshData();
+    }
+
+    renderOrders('all');
+    renderCustomers('all');
+    updateBadges();
+    showToast('訂單已移至暫存區');
+  } catch(e) { showToast('刪除失敗', true); }
+}
+
+async function softDeleteCustomer(cid) {
+  try {
+    await update('customers', 'id', cid, { deleted_at: new Date().toISOString() });
+    await refreshData();
+    renderCustomers('all');
+    updateBadges();
+    showToast('客戶已移至暫存區');
+  } catch(e) { showToast('刪除失敗', true); }
+}
+
+async function restoreOrder(oid) {
+  try {
+    await update('orders', 'order_id', oid, { deleted_at: null });
+    await refreshData();
+    renderTrash();
+    showToast('訂單已復原');
+  } catch(e) { showToast('復原失敗', true); }
+}
+
+async function restoreCustomer(cid) {
+  try {
+    await update('customers', 'id', cid, { deleted_at: null });
+    await refreshData();
+    renderTrash();
+    showToast('客戶已復原');
+  } catch(e) { showToast('復原失敗', true); }
+}
+
+function renderTrash() {
+  const sevenDaysAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString();
+  const deletedOrders = cache.orders.filter(o => o.deleted_at);
+  const deletedCusts  = cache.customers.filter(c => c.deleted_at);
+  const el = document.getElementById('trash-list');
+  if (!el) return;
+
+  if (!deletedOrders.length && !deletedCusts.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">◎</div><div style="font-size:13px">暫存區是空的</div></div>';
+    return;
+  }
+
+  let html = '';
+  if (deletedOrders.length) {
+    html += '<div style="font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">訂單</div>';
+    html += deletedOrders.map(o => {
+      const deletedDate = new Date(o.deleted_at);
+      const expireDate  = new Date(deletedDate.getTime() + 7*24*60*60*1000);
+      const daysLeft    = Math.ceil((expireDate - new Date()) / 86400000);
+      return `<div class="cust-card" style="opacity:0.75">
+        <div class="cust-card-header">
+          <div>
+            <div class="cust-name">${o.order_id} · ${o.customer_name}</div>
+            <div class="cust-sub">${(o.items||[]).map(i=>i.name).join(' + ')}</div>
+          </div>
+          <span class="badge" style="background:var(--red-bg);color:var(--red)">${daysLeft > 0 ? daysLeft+'天後永久刪除' : '即將刪除'}</span>
+        </div>
+        <div class="cust-actions">
+          <button class="btn btn-sm" onclick="restoreOrder('${o.order_id}')">復原</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  if (deletedCusts.length) {
+    html += '<div style="font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:0.06em;text-transform:uppercase;margin:16px 0 8px">客戶</div>';
+    html += deletedCusts.map(c => {
+      const daysLeft = Math.ceil((new Date(c.deleted_at).getTime() + 7*24*60*60*1000 - Date.now()) / 86400000);
+      return `<div class="cust-card" style="opacity:0.75">
+        <div class="cust-card-header">
+          <div>
+            <div class="cust-name">${c.name}</div>
+            <div class="cust-sub">${c.phone||''}</div>
+          </div>
+          <span class="badge" style="background:var(--red-bg);color:var(--red)">${daysLeft > 0 ? daysLeft+'天後永久刪除' : '即將刪除'}</span>
+        </div>
+        <div class="cust-actions">
+          <button class="btn btn-sm" onclick="restoreCustomer('${c.id}')">復原</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  el.innerHTML = html;
+}
+
+
+// ─── 客戶內頁 ────────────────────────────────────────────────
+let currentCustomerId = null;
+
+function closeCustomerModal(e) {
+  if (e.target === document.getElementById('customer-modal')) {
+    document.getElementById('customer-modal').style.display = 'none';
+  }
+}
+
+function openCustomerModal(cid) {
+  const c = cache.customers.find(c => c.id === cid);
+  if (!c) return;
+  currentCustomerId = cid;
+
+  document.getElementById('cust-modal-name').textContent = c.name;
+  document.getElementById('cm-name').value    = c.name || '';
+  document.getElementById('cm-phone').value   = c.phone || '';
+  document.getElementById('cm-address').value = c.address || '';
+  document.getElementById('cm-note').value    = c.note || '';
+  document.getElementById('cm-source').value  = c.source || 'ig';
+  document.getElementById('cm-status').value  = c.status || 'inquiry';
+  document.getElementById('cm-appt').value    = c.appointment_date || '';
+
+  // 歷史訂單
+  const orders = cache.orders.filter(o => o.customer_id === cid && !o.deleted_at);
+  const ordersEl = document.getElementById('cm-orders');
+  if (!orders.length) {
+    ordersEl.innerHTML = '<div style="font-size:12px;color:var(--ink3);padding:8px 0">尚無訂單</div>';
+  } else {
+    ordersEl.innerHTML = orders.map(o => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--line);font-size:13px">
+        <div>
+          <div style="font-weight:500;color:var(--ink)">${o.order_id}</div>
+          <div style="font-size:11px;color:var(--ink3)">${(o.items||[]).map(i=>i.name).join(' + ')}</div>
+        </div>
+        <div style="text-align:right">
+          <div>NT$ ${(o.total||0).toLocaleString()}</div>
+          <span class="badge ${STATUS_BADGE[o.status]||'badge-confirmed'}">${STATUS_LABEL[o.status]||o.status}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  document.getElementById('customer-modal').style.display = 'flex';
+}
+
+async function updateCustomerField(field, value) {
+  if (!currentCustomerId || !value) return;
+  try {
+    await update('customers', 'id', currentCustomerId, { [field]: value });
+    const c = cache.customers.find(c => c.id === currentCustomerId);
+    if (c) c[field] = value;
+    if (field === 'name') document.getElementById('cust-modal-name').textContent = value;
+    updateBadges();
+    renderCustomers('all');
+    showToast('已儲存');
+  } catch(e) { showToast('儲存失敗', true); }
+}
+
+function startOrderFromModal() {
+  const c = cache.customers.find(c => c.id === currentCustomerId);
+  if (!c) return;
+  document.getElementById('customer-modal').style.display = 'none';
+  startOrderFor(currentCustomerId);
+}
+
+function confirmDeleteFromModal() {
+  const c = cache.customers.find(c => c.id === currentCustomerId);
+  if (!c) return;
+  document.getElementById('customer-modal').style.display = 'none';
+  confirmDelete('customer', c.id, c.name);
 }
 
 // ─── Init ─────────────────────────────────────────────────────
@@ -907,11 +1538,18 @@ async function init() {
   }
 }
 
+function updateTrashBadge() {
+  const count = cache.orders.filter(o=>o.deleted_at).length + cache.customers.filter(c=>c.deleted_at).length;
+  const el = document.getElementById('nb-trash');
+  if (el) el.textContent = count || '';
+}
+
 function updateBadges() {
   document.getElementById('nb-cust').textContent = cache.customers.length;
   document.getElementById('nb-orders').textContent = cache.orders.length;
   const pending = cache.orders.filter(o => !o.balance_paid && ['confirmed','producing','ready','shipped'].includes(o.status)).length;
   document.getElementById('nb-pay').textContent = pending || '';
+  updateTrashBadge();
 }
 
 // ─── Navigation ──────────────────────────────────────────────
@@ -923,7 +1561,7 @@ async function gotoPage(id, navEl) {
   else document.querySelectorAll('.nav-item').forEach(n => {
     if ((n.getAttribute('onclick')||'').includes("'"+id+"'")) n.classList.add('active');
   });
-  const titles = {dashboard:'總覽',customers:'客戶管理','new-order':'建立訂單',orders:'訂單管理',production:'生產看板',payments:'收款管理'};
+  const titles = {dashboard:'總覽',customers:'客戶管理','new-order':'建立訂單',orders:'訂單管理',production:'生產看板',payments:'收款管理',trash:'暫存區'};
   document.getElementById('topbar-title').textContent = titles[id]||'';
 
   if (id === 'dashboard') { await refreshData(); renderDashboard(); }
@@ -931,6 +1569,7 @@ async function gotoPage(id, navEl) {
   if (id === 'orders') { await refreshData(); renderOrders('all'); }
   if (id === 'production') { await refreshData(); renderProduction(); }
   if (id === 'payments') { await refreshData(); renderPayments(); }
+  if (id === 'trash') { await refreshData(); renderTrash(); updateTrashBadge(); }
   if (id === 'new-order') initNewOrder();
 }
 
@@ -948,11 +1587,11 @@ async function refreshData() {
 
 // ─── Dashboard ───────────────────────────────────────────────
 function renderDashboard() {
-  const orders = cache.orders;
+  const orders = cache.orders.filter(o => !o.deleted_at);
   const thisMonth = new Date().toISOString().slice(0,7);
   const monthOrders = orders.filter(o => (o.sign_date||'').slice(0,7) === thisMonth);
   const pendingBal = orders.filter(o => !o.balance_paid && o.rate < 1 && ['confirmed','producing','ready','shipped'].includes(o.status));
-  const pendingFollow = cache.customers.filter(c => c.status === 'inquiry');
+  const pendingFollow = cache.customers.filter(c => c.status === 'inquiry' && !c.deleted_at);
   const shippedMonth = orders.filter(o => o.shipped_date && o.shipped_date.slice(0,7) === thisMonth);
 
   document.getElementById('dash-stats').innerHTML = `
@@ -972,7 +1611,7 @@ function renderDashboard() {
 
   renderPipeline('dash-pipeline');
 
-  const recent = [...orders].slice(0,6);
+  const recent = [...orders].filter(o => !o.deleted_at).slice(0,6);
   const th = `<thead><tr>${['訂單編號','客戶','品項','金額','狀態','交期'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>`;
   const tb = '<tbody>' + (recent.length ? recent.map(o=>`
     <tr>
@@ -996,7 +1635,7 @@ const PIPELINE_STAGES = [
 ];
 
 function renderPipeline(containerId) {
-  const active = cache.orders.filter(o => o.status !== 'done');
+  const active = cache.orders.filter(o => o.status !== 'done' && !o.deleted_at);
   let html = '';
   PIPELINE_STAGES.forEach(stage => {
     const cards = active.filter(o => o.status === stage.key);
@@ -1078,7 +1717,7 @@ async function toggleStep(oid, step) {
 
 // ─── Customers ───────────────────────────────────────────────
 function renderCustomers(filter) {
-  let list = cache.customers;
+  let list = cache.customers.filter(c => !c.deleted_at);
   if (filter === 'inquiry') list = list.filter(c => c.status === 'inquiry');
   else if (filter === 'confirmed') list = list.filter(c => ['confirmed','producing','ready'].includes(c.status));
   else if (filter === 'done') list = list.filter(c => ['shipped','done'].includes(c.status));
@@ -1103,7 +1742,7 @@ function renderCustomers(filter) {
         ${c.note?`<div class="cust-meta-item">備註 <strong>${c.note}</strong></div>`:''}
       </div>
       <div class="cust-actions">
-        ${c.status==='inquiry'?`<button class="btn btn-sm btn-primary" onclick="startOrderFor('${c.id}')">建立訂單</button>`:''}
+        <button class="btn btn-sm btn-primary" onclick="openCustomerModal('${c.id}')">查看詳情</button>
       </div>
     </div>`;
   }).join('');
@@ -1369,8 +2008,8 @@ function getItems() {
 
 // 品牌設定：未來新增品牌只需在此加一行
 const BRAND_CONFIG = [
-  { key: 'T', label: 'TON',    detect: (it) => it.name.toUpperCase().includes('TON') },
-  { key: 'E', label: 'Esaila', detect: (it) => it.name.toUpperCase().includes('ESAILA') || it.name.includes('依艾') },
+  { key: 'T', label: 'TON',    detect: (it) => (it.name||'').toUpperCase().includes('TON') },
+  { key: 'E', label: 'Esaila', detect: (it) => (it.name||'').toUpperCase().includes('ESAILA')  },
 ];
 
 function isDealer(it) {
@@ -1380,7 +2019,7 @@ function isDealer(it) {
 function detectTypes(items) {
   const hasTon = items.some(it => BRAND_CONFIG[0].detect(it));
   const hasEsaila = items.some(it => BRAND_CONFIG[1].detect(it));
-  const hasLift = items.some(it => it.name.includes('升降'));
+  const hasLift = items.some(it => (it.name||'').includes('升降'));
   const hasCustom = items.some(it => !isDealer(it));
   return { hasLift, hasTon, hasEsaila, hasCustom };
 }
@@ -1468,14 +2107,16 @@ function renderContract() {
     ?`本契約訂單總金額為新台幣 ${total.toLocaleString()} 元整，本公司於收到價金後進行出貨事宜。`
     :`本契約訂單總金額為新台幣 ${total.toLocaleString()} 元整。<br>客戶應於簽立本契約後三日內給付訂金 <strong>${dep.toLocaleString()}</strong> 元（即總價款之${rate===0.5?'五成':'三成'}）。尾款 <strong>${bal.toLocaleString()}</strong> 元於本公司完成到貨安裝後三日內給付（以現場完成照片為確認依據）。於價款全數付清前，家具所有權仍屬本公司所有。`;
 
-  let warrantyHtml = `<h3>九、保固與維護</h3>
-    <p>本公司自交付日起提供木質承重結構五年保固，所稱木質承重結構，係指家具之承重結構與榫接結構部分，於正常使用情況下，如發生結構鬆動或製作瑕疵，本公司將提供檢視與維修服務。<br>木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
-  if(hasCustom||hasLift) warrantyHtml+=`<p>本公司自製之木質家具及其木質表面，採用日本大谷塗料進行塗裝處理，符合 F☆☆☆☆（F四星）認證標準，具備防水、耐熱100℃、耐酒精特性，屬食品級塗料，無甲醛添加。<br>表面塗裝屬耗材性質，提供<strong>一年保固</strong>。若因使用強酸、強鹼、表面溫度大於100度所致之損壞，不在保固範圍內。</p>`;
+  const hasFretwork2 = items.some(it => !(it.name||'').toUpperCase().includes('TON') && !(it.name||'').toUpperCase().includes('ESAILA') && !(it.name||'').includes('天童木工'));
+  let warrantyHtml = `<h3>${isTonOnly?'五':'九'}、保固與維護</h3>`;
+  if(hasFretwork2) warrantyHtml+=`<p>本公司自交付日起提供木質承重結構五年保固，所稱木質承重結構，係指家具之承重結構與榫接結構部分，於正常使用情況下，如發生結構鬆動或製作瑕疵，本公司將提供檢視與維修服務。<br>木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
+  if(hasFretwork2||hasLift) warrantyHtml+=`<p>本公司自製之木質家具及其木質表面，採用日本大谷塗料進行塗裝處理，符合 F☆☆☆☆（F四星）認證標準，具備防水、耐熱100℃、耐酒精特性，屬食品級塗料，無甲醛添加。<br>表面塗裝屬耗材性質，提供<strong>一年保固</strong>。若因使用強酸、強鹼、表面溫度大於100度所致之損壞，不在保固範圍內。</p>`;
   if(hasLift) warrantyHtml+=`<p><strong>【升降桌】</strong>電動升降桌馬達系統，自交付日起提供<strong>五年保固</strong>。保固範圍限於正常使用情況下之機械或電動故障。因不當使用、外力撞擊、液體滲入、自行拆裝或改裝所致之損壞，不在保固範圍內。</p>`;
-  if(hasTon) warrantyHtml+=`<p><strong>【TON 椅具】</strong>自交付日起提供五年結構保固。木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
+  if(hasTon) warrantyHtml+=`<p>自交付日起提供五年結構保固。木材為天然素材，其自然紋理變化、色澤差異、合理使用痕跡與自然伸縮，屬正常現象，不屬保固範圍。</p>`;
+
 
   const isTonOnly = hasTon&&!hasCustom&&!hasLift;
-  const wNum = isTonOnly?'五':'十';
+  const wNum = isTonOnly?'六':'十';
 
   let html = `
     <h1>FRETWORK FURNITURE</h1><h2>訂製家具契約書</h2>
@@ -1504,7 +2145,7 @@ function renderContract() {
   html += warrantyHtml + `
     <h3>${wNum}、付款資訊</h3>
     <p>玉山銀行（銀行代碼 808）<br>帳號：1300-940-033-256<br>戶名：黑式設計有限公司<br><br>匯款後請備註客戶姓名或訂單編號，以利核對。</p>
-    <p style="margin-top:20px">以上內容確認無誤後請簽名回傳</p>
+    <div class="sig-section"><p style="margin-top:20px">以上內容確認無誤後請簽名回傳</p>
     <div class="sig-area">
       <div class="sig-block has-line"><div>客戶簽名：</div><div style="height:48px"></div></div>
       <div class="sig-block"><div>黑式設計有限公司${isTonOnly?' 代表人':''} 簽名：</div>
@@ -1586,6 +2227,16 @@ async function saveOrder() {
 
     await refreshData();
     showToast(`訂單 ${orderId} 建立成功！`);
+
+    // 同步交期到 Google Calendar
+    const deliveryDate = document.getElementById('f-delivery')?.value;
+    if (deliveryDate) {
+      const itemNames = items.map(it => it.name).join(' + ');
+      const calTitle = `【Fretwork 出貨】${name} — ${itemNames}`;
+      const calNote = `訂單編號：${orderId}\n品項：${itemNames}\n總金額：NT$ ${total.toLocaleString()}`;
+      await addToGoogleCalendar(calTitle, deliveryDate, '10:00', calNote);
+    }
+
     gotoPage('orders',null);
   } catch(e) {
     showToast('建立失敗：'+e.message, true);
@@ -1596,7 +2247,7 @@ async function saveOrder() {
 
 // ─── Orders ──────────────────────────────────────────────────
 function renderOrders(filter) {
-  let orders = cache.orders;
+  let orders = cache.orders.filter(o => !o.deleted_at);
   if(filter!=='all') orders = orders.filter(o=>o.status===filter);
   const el = document.getElementById('orders-list');
   if(!orders.length){
@@ -1629,6 +2280,7 @@ function renderOrders(filter) {
         <button class="btn btn-sm" onclick="openStepModal('${o.order_id}')">工序進度</button>
         <button class="btn btn-sm" onclick="advanceStatus('${o.order_id}')">推進狀態</button>
         <button class="btn btn-sm" onclick="viewContract('${o.order_id}')">查看合約</button>
+        <button class="btn btn-sm" style="color:var(--red)" onclick="confirmDelete('order','${o.order_id}','${o.customer_name}')">刪除</button>
         ${!o.deposit_paid?`<button class="btn btn-sm" onclick="markPaid('${o.order_id}','deposit')">✓ 收訂金</button>`:''}
         ${!o.balance_paid&&o.rate<1&&['ready','shipped'].includes(o.status)?`<button class="btn btn-sm" onclick="markPaid('${o.order_id}','balance')">✓ 收尾款</button>`:''}
       </div>
@@ -1679,7 +2331,7 @@ async function markPaid(oid, type) {
 
 // ─── Production ──────────────────────────────────────────────
 function renderProduction() {
-  const urgent = cache.orders.filter(o=>{
+  const urgent = cache.orders.filter(o=>!o.deleted_at).filter(o=>{
     if(!o.delivery_date||['shipped','done'].includes(o.status)) return false;
     return Math.ceil((new Date(o.delivery_date)-new Date())/86400000)<=14;
   });
@@ -1692,7 +2344,7 @@ function renderProduction() {
 
 // ─── Payments ────────────────────────────────────────────────
 function renderPayments() {
-  const orders = cache.orders;
+  const orders = cache.orders.filter(o => !o.deleted_at);
   const pendingDep = orders.filter(o=>!o.deposit_paid&&o.status!=='inquiry');
   const pendingBal = orders.filter(o=>!o.balance_paid&&o.rate<1&&['ready','shipped'].includes(o.status));
   const totalDep = pendingDep.reduce((a,o)=>a+(o.deposit||0),0);
